@@ -56,7 +56,7 @@ jobs:
         run: npm run build
 
   release:
-    name: Publish NPM Package
+    name: Publish
     needs: [test, lint, build]
     runs-on: ubuntu-latest
     if: |
