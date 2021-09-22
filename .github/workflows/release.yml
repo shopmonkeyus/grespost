@@ -10,6 +10,12 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
 
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
+
       - name: NPM Install
         run: npm ci
 
@@ -36,6 +42,12 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
 
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
+
       - name: NPM Install
         run: npm ci
 
@@ -48,6 +60,12 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: NPM Install
         run: npm ci
@@ -71,6 +89,12 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: NPM Install
         run: npm ci
@@ -104,7 +128,5 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.SHOPMONKEY_NPM_TOKEN }}
         run: |
-          echo "Channel: ${{ steps.release.outputs.channel }}"
-          echo "Version: ${{ steps.release.outputs.version }}"
           npm --no-git-tag-version version '${{ steps.release.outputs.version }}'
           npm publish --tag '${{ steps.release.outputs.channel || 'latest' }}'
