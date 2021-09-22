@@ -107,4 +107,4 @@ jobs:
           echo "Channel: ${{ steps.release.outputs.channel }}"
           echo "Version: ${{ steps.release.outputs.version }}"
           npm --no-git-tag-version version '${{ steps.release.outputs.version }}'
-          npm publish --tag '${{ steps.release.outputs.channel }}'
+          npm publish --tag '${{ steps.release.outputs.channel || 'latest' }}'
