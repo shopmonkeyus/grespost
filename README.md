@@ -1,17 +1,11 @@
 <h1 align="center">Welcome to Grespost 👋</h1>
 <p>
-  <a href="https://shopmonkeyus.github.io/grespost/" target="_blank">
-    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
-  </a>
-  <a href="https://github.com/shopmonkeyus/grespost/graphs/commit-activity" target="_blank">
-    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
-  </a>
-  <a href="https://github.com/shopmonkeyus/grespost/blob/master/LICENSE" target="_blank">
-    <img alt="License: ISC" src="https://img.shields.io/github/license/shopmonkeyus/grespost" />
+  <a href="https://www.npmjs.com/package/grespost" target="_blank">
+    <img alt="npm" src="https://img.shields.io/npm/v/grespost" />
   </a>
 </p>
 
-> Full featured Postgres query builder
+> Full featured Postgres Query Builder
 
 ### 🏠 [Homepage](https://shopmonkeyus.github.io/grespost/)
 
