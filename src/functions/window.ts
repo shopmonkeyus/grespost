@@ -1,6 +1,6 @@
 import { stringifyOrderBy } from '..'
 import { AnyExpression, condition, Condition, Expression, expression, ToType } from '../expressions'
-import { identifier, keyword, sql, sv, Template } from '../template'
+import {  sql, Template } from '../template'
 import { BigintType, DoubleType, IntegerArg, IntegerType } from '../types'
 
 export interface WindowBoundConfig {
@@ -26,27 +26,27 @@ export interface WindowDefinitionConfig {
 }
 
 export const stringifyWindowDefinition = (config: WindowDefinitionConfig): Template => {
-  const NAME = config.name ? sql` ${identifier(config.name)}` : sql``
-  const PARTITION_BY = config.partitionBy ? sql` PARTITION BY ${sv(config.partitionBy)}` : sql``
-  const ORDER_BY = config.orderBy ? sql` ORDER BY ${sv(config.orderBy.map(stringifyOrderBy))}` : sql``
+  const NAME = config.name ? sql` ${sql.ident(config.name)}` : sql``
+  const PARTITION_BY = config.partitionBy ? sql` PARTITION BY ${sql.join(config.partitionBy)}` : sql``
+  const ORDER_BY = config.orderBy ? sql` ORDER BY ${sql.join(config.orderBy.map(stringifyOrderBy))}` : sql``
   const FRAME = config.frame ? sql` ${stringifyFrame(config.frame)}` : sql``
 
   return sql`${NAME}${PARTITION_BY}${ORDER_BY}${FRAME} `
 }
 
 export const stringifyFrame = (config: Exclude<WindowDefinitionConfig['frame'], undefined>): Template => {
-  const TYPE = keyword(config.type, ['RANGE', 'ROWS', 'GROUPS'])
+  const TYPE = sql.keyword(config.type, ['RANGE', 'ROWS', 'GROUPS'])
   const BOUNDS = config.start && config.end
     ? sql` BETWEEN ${stringifyWindowBound(config.start)} AND ${stringifyWindowBound(config.end)}`
     : sql` ${stringifyWindowBound(config.start)}`
-  const EXCLUDE = config.exclude ? sql` EXCLUDE ${keyword(config.exclude, ['CURRENT ROW', 'GROUP', 'TIES', 'NO OTHERS'])}` : sql``
+  const EXCLUDE = config.exclude ? sql` EXCLUDE ${sql.keyword(config.exclude, ['CURRENT ROW', 'GROUP', 'TIES', 'NO OTHERS'])}` : sql``
 
   return sql`${TYPE}${BOUNDS}${EXCLUDE}`
 }
 
 const stringifyWindowBound = (bound: WindowBoundConfig) => {
   const OFFSET = bound.offset ? sql`${bound.offset} ` : sql``
-  const TYPE = keyword(bound.type, ['PRECEDING', 'UNBOUNDED PRECEDING', 'CURRENT ROW', 'FOLLOWING', 'UNBOUNDED FOLLOWING'])
+  const TYPE = sql.keyword(bound.type, ['PRECEDING', 'UNBOUNDED PRECEDING', 'CURRENT ROW', 'FOLLOWING', 'UNBOUNDED FOLLOWING'])
   return sql`${OFFSET}${TYPE}`
 }
 
@@ -138,7 +138,7 @@ export function LAG <T> (value: T, offset: IntegerArg, def: T, window: WindowCon
 export function LAG <T> (value: T, offset?: IntegerArg | WindowConfig, def?: T | WindowConfig, window?: WindowConfig): Expression<ToType<T>> {
   const args = [...arguments]
   const windowConfig = args.pop() as WindowConfig
-  return expression`LAG(${sv(args)})${stringifyWindowConfig(windowConfig)}`
+  return expression`LAG(${sql.join(args)})${stringifyWindowConfig(windowConfig)}`
 }
 
 /**
@@ -156,7 +156,7 @@ export function LEAD <T> (value: T, offset: IntegerArg, def: T, window: WindowCo
 export function LEAD <T> (value: T, offset?: IntegerArg | WindowConfig, def?: T | WindowConfig, window?: WindowConfig): Expression<ToType<T>> {
   const args = [...arguments]
   const windowConfig = args.pop() as WindowConfig
-  return expression`LEAD(${sv(args)})${stringifyWindowConfig(windowConfig)}`
+  return expression`LEAD(${sql.join(args)})${stringifyWindowConfig(windowConfig)}`
 }
 
 /**
@@ -187,5 +187,5 @@ export function LAST_VALUE <T> (value: T, window: WindowConfig): Expression<ToTy
  * @signature nth_value ( value anyelement, n integer ) → anyelement
  */
 export function NTH_VALUE <T> (value: T, n: IntegerArg, window: WindowConfig): Expression<ToType<T>> {
-  return expression`NTH_VALUE(${sv([value, n])})${stringifyWindowConfig(window)}`
+  return expression`NTH_VALUE(${sql.join([value, n])})${stringifyWindowConfig(window)}`
 }

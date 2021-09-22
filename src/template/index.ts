@@ -1,30 +1,48 @@
-export * from './identifier'
-export * from './keyword'
+import { eident } from './eident'
 export * from './eident'
 
 export interface Sqlable {
   toSql(): string
 }
 
-export const sql = (strings: TemplateStringsArray, ...literals: any[]) => {
+export interface Keyword<T extends string = string> extends Sqlable {}
+
+export interface Sql {
+  (strings: TemplateStringsArray, ...literals: any[]): Template
+  join(values: any[], separator?: string, wrap?: string): Template
+  operator(op: string): Sqlable
+  ident(...path: string[]): Sqlable
+  keyword<T extends string = string>(name: T, check?: string[]): Keyword<T>
+}
+
+export const sql: Sql = (strings: TemplateStringsArray, ...literals: any[]) => {
   return new Template([...strings], literals)
 }
 
-export const ES = { toSql: () => '' }
-
-export const sv = (values: any[], separator = ', ', wrap = '') => {
+sql.join = (values: any[], separator = ', ', wrap = '') => {
   const [l = '', r = ''] = wrap.split('')
   if (values.length === 0) return sql``
   const commas = new Array(values.length - 1).fill(separator)
   return new Template([l, ...commas, r], values)
 }
 
-export const operator = (operator: string) => {
+sql.operator = (operator: string) => {
   const op = operator.slice(0)
   if (!/^[+\-*/<>=~!@#%^&|`?]{1,63}$/.test(op)) throw new Error(`Invalid operator: ${op}`)
   if (/(--|\/\*)/gm.test(op)) throw new Error(`Invalid operator: ${op}`)
   if (op.length > 1 && /[+-]$/.test(op) && !/^[~!@#%^&|`?]+[+-]$/.test(op)) throw new Error(`Invalid operator: ${op}`)
   return { toSql: () => op }
+}
+
+sql.ident = (...path: string[]) => {
+  return { toSql: () => path.map(eident).join('.') }
+}
+
+sql.keyword = <T extends string = string>(name: T, check?: string[]): Keyword<T> => {
+  if (check && !check.includes(name.toUpperCase())) {
+    throw new Error(`'${name}' keyword is not valid. Should be one of '${check.join(' | ')}'`)
+  }
+  return { toSql: () => name.toUpperCase() } as Keyword<T>
 }
 
 export class Template {

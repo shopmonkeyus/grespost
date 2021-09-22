@@ -1,5 +1,5 @@
 import { AnyExpression, condition, Condition } from '../../expressions'
-import { identifier, keyword, sql, sv, Template } from '../../template'
+import { sql, Template } from '../../template'
 import { FieldsConfig, stringifyFields } from '../common/fields'
 import { stringifyWith, WithConfig } from '../common/with'
 import { Query, QueryDefinition, Source, Table } from '../../source'
@@ -47,7 +47,7 @@ export interface InsertConfig {
 export const stringifyInsert = (config: InsertConfig): Template => {
   const WITH = config.with ? sql`WITH ${stringifyWith(config.with)} ` : sql``
   const INTO = sql`INTO ${config.into.$.toSource()}`
-  const OVERRIDING = config.overriding ? sql` OVERRIDING ${keyword(config.overriding, ['SYSTEM', 'USER'])} VALUE` : sql``
+  const OVERRIDING = config.overriding ? sql` OVERRIDING ${sql.keyword(config.overriding, ['SYSTEM', 'USER'])} VALUE` : sql``
   const [COLUMNS, VALUES] = stringifyInsertValues(config.values)
   const CONFLICT = config.onConflict ? sql` ON CONFLICT ${stringifyOnConflict(config.onConflict)}` : sql``
   const RETURNING = config.returning ? config.returning === '*' ? sql` RETURNING *` : sql` RETURNING ${stringifyFields(config.returning)}` : sql``
@@ -64,27 +64,27 @@ export function stringifyInsertValues (config: Exclude<InsertConfig['values'], u
       return acc
     }, new Set<string>())]
     const values = config.reduce<Template[]>((acc, row) => {
-      acc.push(sql`( ${sv(columns.map(key => row[key] === undefined ? null : row[key]))} )`)
+      acc.push(sql`( ${sql.join(columns.map(key => row[key] === undefined ? null : row[key]))} )`)
       return acc
     }, [])
-    return [sql` ( ${sv(columns.map(el => identifier(el)))} )`, sql`VALUES ${sv(values)}`]
+    return [sql` ( ${sql.join(columns.map(el => sql.ident(el)))} )`, sql`VALUES ${sql.join(values)}`]
   }
   return [
-    config.columns ? sql` ( ${sv(config.columns.map((el: string) => identifier(el)))} )` : sql``,
-    sql`VALUES ${sv(config.values.map((el: any[]) => sql`( ${sv(el)} )`))}`
+    config.columns ? sql` ( ${sql.join(config.columns.map((el: string) => sql.ident(el)))} )` : sql``,
+    sql`VALUES ${sql.join(config.values.map((el: any[]) => sql`( ${sql.join(el)} )`))}`
   ]
 }
 
 export function stringifyOnConflict (config: Exclude<InsertConfig['onConflict'], undefined>): Template {
   const TARGET = config.targets ? sql`${stringifyConflictTarget(config.targets)} ` : sql``
-  const CONSTRAINT = config.constraint ? sql`ON CONSTRAINT ${identifier(config.constraint)} ` : sql``
+  const CONSTRAINT = config.constraint ? sql`ON CONSTRAINT ${sql.ident(config.constraint)} ` : sql``
   const ACTION = stringifyOnConflictAction(config.action)
   return sql`${TARGET}${CONSTRAINT}${ACTION}`
 }
 
 export function stringifyConflictTarget (config: Exclude<Exclude<InsertConfig['onConflict'], undefined>['targets'], undefined>): Template {
   const { names, where } = config
-  const TARGETS = sql`( ${sv(names.map(el => Array.isArray(el) ? sql`( ${sv(el.map(it => identifier(it)))} )` : identifier(el)))} )`
+  const TARGETS = sql`( ${sql.join(names.map(el => Array.isArray(el) ? sql`( ${sql.join(el.map(it => sql.ident(it)))} )` : sql.ident(el)))} )`
   const WHERE = where ? sql` WHERE ${condition(where)}` : sql``
   return sql`${TARGETS}${WHERE}`
 }

@@ -1,6 +1,5 @@
-import { operator, sql } from '..'
+import { sql } from '..'
 import { eident } from '../eident'
-import { keyword } from '../keyword'
 
 describe('template helper functions', () => {
   it('eident throws if argument not string', () => {
@@ -8,14 +7,14 @@ describe('template helper functions', () => {
   })
 
   it('keyword throws if cheks didn`t passed', () => {
-    expect(() => keyword('some', ['ANY'])).toThrow()
+    expect(() => sql.keyword('some', ['ANY'])).toThrow()
   })
 
   it('operator throws if operator is not valid', () => {
-    expect(() => operator('--')).toThrow()
-    expect(() => operator('/*')).toThrow()
-    expect(() => operator('aa')).toThrow()
-    expect(() => operator('/+')).toThrow()
+    expect(() => sql.operator('--')).toThrow()
+    expect(() => sql.operator('/*')).toThrow()
+    expect(() => sql.operator('aa')).toThrow()
+    expect(() => sql.operator('/+')).toThrow()
   })
 
   it('text and values', () => {

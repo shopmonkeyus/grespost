@@ -1,5 +1,5 @@
 import { Expression, expression } from '../expressions'
-import { sv } from '../template'
+import { sql } from '../template'
 import {
   ArrayType,
   IntegerType,
@@ -23,7 +23,7 @@ import {
  * @sql array_to_tsvector('{fat,cat,rat}'::text[]): 'cat' 'fat' 'rat'
  */
 export function ARRAY_TO_TSVECTOR (arg: ArrayArg<TextType>): Expression<TSVectorType> {
-  return expression`ARRAY_TO_TSVECTOR(${sv([...arguments])})`
+  return expression`ARRAY_TO_TSVECTOR(${sql.join([...arguments])})`
 }
 
 /**
@@ -41,7 +41,7 @@ export function GET_CURRENT_TS_CONFIG (): Expression<TextType> {
  * @sql numnode('(fat & rat) | cat'::tsquery): 5
  */
 export function NUMNODE (arg: TSQueryArg): Expression<IntegerType> {
-  return expression`NUMNODE(${sv([...arguments])})`
+  return expression`NUMNODE(${sql.join([...arguments])})`
 }
 
 /**
@@ -52,7 +52,7 @@ export function NUMNODE (arg: TSQueryArg): Expression<IntegerType> {
  * @sql plainto_tsquery('english', 'The Fat Rats'): 'fat' & 'rat'
  */
 export function PLAINTO_TSQUERY (query: CharacterArg, lang?: CharacterArg): Expression<TSQueryType> {
-  return expression`PLAINTO_TSQUERY(${sv([...arguments])})`
+  return expression`PLAINTO_TSQUERY(${sql.join([...arguments])})`
 }
 
 /**
@@ -63,7 +63,7 @@ export function PLAINTO_TSQUERY (query: CharacterArg, lang?: CharacterArg): Expr
  * @sql phraseto_tsquery('english', 'The Fat Rats'): 'fat' <-> 'rat'
  */
 export function PHRASETO_TSQUERY (query: CharacterArg, lang?: CharacterArg): Expression<TSQueryType> {
-  return expression`PHRASETO_TSQUERY(${sv([...arguments])})`
+  return expression`PHRASETO_TSQUERY(${sql.join([...arguments])})`
 }
 
 /**
@@ -75,7 +75,7 @@ export function PHRASETO_TSQUERY (query: CharacterArg, lang?: CharacterArg): Exp
  * @sql websearch_to_tsquery('english', '\"fat rat\" or cat dog'): 'fat' <-> 'rat' | 'cat' & 'dog'
  */
 export function WEBSEARCH_TO_TSQUERY (query: CharacterArg, lang?: CharacterArg): Expression<TSQueryType> {
-  return expression`WEBSEARCH_TO_TSQUERY(${sv([...arguments])})`
+  return expression`WEBSEARCH_TO_TSQUERY(${sql.join([...arguments])})`
 }
 
 /**
@@ -85,7 +85,7 @@ export function WEBSEARCH_TO_TSQUERY (query: CharacterArg, lang?: CharacterArg):
  * @sql querytree('foo & ! bar'::tsquery): 'foo'
  */
 export function QUERYTREE (query: TSQueryArg): Expression<TextType> {
-  return expression`QUERYTREE(${sv([...arguments])})`
+  return expression`QUERYTREE(${sql.join([...arguments])})`
 }
 
 /**
@@ -96,7 +96,7 @@ export function QUERYTREE (query: TSQueryArg): Expression<TextType> {
  *  setweight('fat:2,4 cat:3 rat:5,6B'::tsvector, 'A', '{cat,rat}'): 'cat':3A 'fat':2,4 'rat':5A,6A
  */
 export function SETWEIGHT (vector: TSVectorArg, weight: CharacterArg, lexemes?: ArrayArg<TextType>): Expression<TSVectorType> {
-  return expression`SETWEIGHT(${sv([...arguments])})`
+  return expression`SETWEIGHT(${sql.join([...arguments])})`
 }
 
 /**
@@ -105,7 +105,7 @@ export function SETWEIGHT (vector: TSVectorArg, weight: CharacterArg, lexemes?: 
  * @sql strip('fat:2,4 cat:3 rat:5A'::tsvector): 'cat' 'fat' 'rat'
  */
 export function STRIP (vector: TSVectorArg): Expression<TSVectorType> {
-  return expression`STRIP(${sv([...arguments])})`
+  return expression`STRIP(${sql.join([...arguments])})`
 }
 
 /**
@@ -115,7 +115,7 @@ export function STRIP (vector: TSVectorArg): Expression<TSVectorType> {
  * @sql to_tsquery('english', 'The & Fat & Rats'): 'fat' & 'rat'
  */
 export function TO_TSQUERY (query: CharacterArg, lang?: CharacterArg): Expression<TSQueryType> {
-  return expression`TO_TSQUERY(${sv([...arguments])})`
+  return expression`TO_TSQUERY(${sql.join([...arguments])})`
 }
 
 /**
@@ -132,7 +132,7 @@ export function TO_TSQUERY (query: CharacterArg, lang?: CharacterArg): Expressio
  *  to_tsvector('english', '{"aa": "The Fat Rats", "b": "dog"}'::jsonb) → 'dog':1 'fat':4 'rat':5
  */
 export function TO_TSVECTOR (document: CharacterArg | JSONArg | JSONBArg, lang?: CharacterArg): Expression<TSVectorType> {
-  return expression`TO_TSVECTOR(${sv([...arguments])})`
+  return expression`TO_TSVECTOR(${sql.join([...arguments])})`
 }
 
 /**
@@ -148,7 +148,7 @@ export function TO_TSVECTOR (document: CharacterArg | JSONArg | JSONBArg, lang?:
  * @sql jsonb_to_tsvector ( [ config regconfig, ] document jsonb, filter jsonb ): tsvector
  */
 export function JSON_TO_TSVECTOR (document: JSONArg, filter: JSONBArg, config?: CharacterArg): Expression<TSVectorType> {
-  return expression`JSON_TO_TO_TSVECTOR(${sv([...arguments])})`
+  return expression`JSON_TO_TO_TSVECTOR(${sql.join([...arguments])})`
 }
 
 /**
@@ -164,7 +164,7 @@ export function JSON_TO_TSVECTOR (document: JSONArg, filter: JSONBArg, config?: 
  * or "all" (to include all the above). As a special case, the filter can also be a simple JSON value that is one of these keywords.
  */
 export function JSONB_TO_TSVECTOR (document: JSONBArg, filter: JSONBArg, config?: CharacterArg): Expression<TSVectorType> {
-  return expression`JSONB_TO_TO_TSVECTOR(${sv([...arguments])})`
+  return expression`JSONB_TO_TO_TSVECTOR(${sql.join([...arguments])})`
 }
 
 /**
@@ -174,7 +174,7 @@ export function JSONB_TO_TSVECTOR (document: JSONBArg, filter: JSONBArg, config?
  * @sql ts_delete('fat:2,4 cat:3 rat:5A'::tsvector, ARRAY['fat','rat']): 'cat':3
  */
 export function TS_DELETE (vector: TSVectorArg, lexeme: CharacterArg | ArrayArg<TextType>): Expression<TSVectorType> {
-  return expression`TS_DELETE(${sv([...arguments])})`
+  return expression`TS_DELETE(${sql.join([...arguments])})`
 }
 
 /**
@@ -182,7 +182,7 @@ export function TS_DELETE (vector: TSVectorArg, lexeme: CharacterArg | ArrayArg<
  * @sql ts_filter('fat:2,4 cat:3b,7c rat:5A'::tsvector, '{a,b}'): 'cat':3B 'rat':5A
  */
 export function TS_FILTER (vector: TSVectorArg, weight: ArrayArg<TextType>): Expression<TSVectorType> {
-  return expression`TS_FILTER(${sv([...arguments])})`
+  return expression`TS_FILTER(${sql.join([...arguments])})`
 }
 
 /**
@@ -194,7 +194,7 @@ export function TS_FILTER (vector: TSVectorArg, weight: ArrayArg<TextType>): Exp
  * @sql ts_headline('The fat cat ate the rat.', 'cat'): The fat <b>cat</b> ate the rat.
  */
 export function TS_HEADLINE (document: CharacterArg | JSONArg | JSONBArg, query: TSQueryArg, options?: CharacterArg, config?: CharacterArg): Expression<TextType> {
-  return expression`TS_HEADLINE(${sv([...arguments])})`
+  return expression`TS_HEADLINE(${sql.join([...arguments])})`
 }
 
 /**
@@ -207,7 +207,7 @@ export function TS_RANK (
   weights?: ArrayArg<RealType>,
   normalization?: IntegerArg
 ): Expression<RealType> {
-  return expression`TS_RANK(${sv([...arguments])})`
+  return expression`TS_RANK(${sql.join([...arguments])})`
 }
 
 /**
@@ -220,7 +220,7 @@ export function TS_RANK_CD (
   weights?: ArrayArg<RealType>,
   normalization?: IntegerArg
 ): Expression<RealType> {
-  return expression`TS_RANK_CD(${sv([...arguments])})`
+  return expression`TS_RANK_CD(${sql.join([...arguments])})`
 }
 
 /**
@@ -230,7 +230,7 @@ export function TS_RANK_CD (
 export function TS_REWRITE (query: TSQueryArg, target: TSQueryArg, substitute: TSQueryArg): Expression<TSQueryType>
 export function TS_REWRITE (query: TSQueryArg, select: CharacterArg): Expression<TSQueryType>
 export function TS_REWRITE (query: TSQueryArg, target: TSQueryArg | CharacterArg, substitute?: TSQueryArg): Expression<TSQueryType> {
-  return expression`TS_REWRITE(${sv([...arguments])})`
+  return expression`TS_REWRITE(${sql.join([...arguments])})`
 }
 
 /**
@@ -238,7 +238,7 @@ export function TS_REWRITE (query: TSQueryArg, target: TSQueryArg | CharacterArg
  * @sql tsquery_phrase(to_tsquery('fat'), to_tsquery('cat')): 'fat' <-> 'cat'
  */
 export function TSQUERY_PHRASE (q1: TSQueryArg, q2: TSQueryArg, distance?: IntegerArg): Expression<TSQueryType> {
-  return expression`TSQUERY_PHRASE(${sv([...arguments])})`
+  return expression`TSQUERY_PHRASE(${sql.join([...arguments])})`
 }
 
 /**
@@ -246,7 +246,7 @@ export function TSQUERY_PHRASE (q1: TSQueryArg, q2: TSQueryArg, distance?: Integ
  * @sql tsvector_to_array('fat:2,4 cat:3 rat:5A'::tsvector): {cat,fat,rat}
  */
 export function TSVECTOR_TO_ARRAY (vector: TSVectorArg): Expression<ArrayType<TextType>> {
-  return expression`TSVECTOR_TO_ARRAY(${sv([...arguments])})`
+  return expression`TSVECTOR_TO_ARRAY(${sql.join([...arguments])})`
 }
 
 // /**

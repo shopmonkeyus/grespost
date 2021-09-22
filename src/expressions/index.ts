@@ -1,5 +1,4 @@
-import { sv } from '../template'
-import { keyword } from '../template/keyword'
+import { sql } from '../template'
 import { ArrayType, BooleanType, ByteaType, JSONBType, NumericType, TextType, TimestampType, Type, UnknownType } from '../types'
 import { ArrayOps } from './array'
 import { AnyExpression } from './any'
@@ -53,8 +52,8 @@ export function literal <T> (lit: T): Expression<UnknownLiteral<T>> {
 export type Condition = Condition[] | AnyExpression | 'AND' | 'OR' | 'NOT'
 
 export const condition = (cond: Condition): Expression<BooleanType> => {
-  if (Array.isArray(cond)) return expression`( ${sv(cond.map(condition), ' ')} )`
-  if (typeof cond === 'string' && ['AND', 'OR', 'NOT'].includes(cond.toUpperCase())) return expression`${keyword(cond, ['AND', 'OR', 'NOT'])}`
+  if (Array.isArray(cond)) return expression`( ${sql.join(cond.map(condition), ' ')} )`
+  if (typeof cond === 'string' && ['AND', 'OR', 'NOT'].includes(cond.toUpperCase())) return expression`${sql.keyword(cond, ['AND', 'OR', 'NOT'])}`
   return expression`${cond}`
 }
 

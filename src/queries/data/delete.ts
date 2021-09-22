@@ -1,7 +1,7 @@
 import { MapToExpression } from '../'
 import { AnyExpression, condition, Condition } from '../../expressions'
 import { QueryDefinition, Source } from '../../source'
-import { identifier, sql, Template } from '../../template'
+import { sql, Template } from '../../template'
 import { FieldsConfig, stringifyFields } from '../common/fields'
 import { FromConfig, stringifyFrom, stringifyTable } from '../common/from'
 import { stringifyWith, WithConfig } from '../common/with'
@@ -39,7 +39,7 @@ export const stringifyDelete = (config: DeleteConfig): Template => {
   const FROM = sql`FROM ${stringifyTable(config.from)}`
   const USING = config.using ? sql` USING ${stringifyFrom(config.using)}` : sql``
   const WHERE = config.where ? sql` WHERE ${condition(config.where)}` : sql``
-  const CURSOR = config.whereCurrentOf ? sql` WHERE CURRENT OF ${identifier(config.whereCurrentOf)}` : sql``
+  const CURSOR = config.whereCurrentOf ? sql` WHERE CURRENT OF ${sql.ident(config.whereCurrentOf)}` : sql``
   const RETURNING = config.returning ? config.returning === '*' ? sql` RETURNING *` : sql` RETURNING ${stringifyFields(config.returning)}` : sql``
 
   return sql`${WITH}DELETE ${FROM}${USING}${WHERE}${CURSOR}${RETURNING}`

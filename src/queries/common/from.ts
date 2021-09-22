@@ -1,8 +1,6 @@
 import { AnyExpression, condition, Condition } from '../../expressions'
 import { Source } from '../../source'
-import { sql, sv, Template } from '../../template'
-import { identifier } from '../../template/identifier'
-import { keyword } from '../../template/keyword'
+import { sql, Template } from '../../template'
 import { MathArg } from '../../types'
 
 export interface JoinConfig {
@@ -29,7 +27,7 @@ export type TablesampleConfig = AnyExpression | {
 }
 
 export const stringifyFrom = (config: FromConfig): Template => {
-  if (Array.isArray(config)) return sql`${sv(config.map(stringifyFrom))}`
+  if (Array.isArray(config)) return sql`${sql.join(config.map(stringifyFrom))}`
   const {
     source,
     lateral = undefined,
@@ -40,7 +38,7 @@ export const stringifyFrom = (config: FromConfig): Template => {
   const ONLY_OR_LATERAL = only ? sql`ONLY ` : (lateral ? sql`LATERAL ` : sql``)
   const SOURCE = source.$.toSource()
   const TABLESAMPLE = tablesample ? sql` ${stringifyTablesample(tablesample)}` : sql``
-  const JOINS = (joins && joins.length !== 0) ? sql` ${sv(joins.map(stringifyJoins), ' ')}` : sql``
+  const JOINS = (joins && joins.length !== 0) ? sql` ${sql.join(joins.map(stringifyJoins), ' ')}` : sql``
   return sql`${ONLY_OR_LATERAL}${SOURCE}${TABLESAMPLE}${JOINS}`
 }
 
@@ -53,10 +51,10 @@ export const stringifyTablesample = (config: TablesampleConfig): Template => {
 export const stringifyJoins = (config: JoinConfig): Template => {
   const { type, source, on, using, natural } = config
   const NATURAL = natural ? sql`NATURAL ` : sql``
-  const TYPE = keyword(type, ['LEFT', 'LEFT OUTER', 'RIGHT', 'RIGHT OUTER', 'FULL', 'FULL OUTER', 'INNER', 'CROSS'])
+  const TYPE = sql.keyword(type, ['LEFT', 'LEFT OUTER', 'RIGHT', 'RIGHT OUTER', 'FULL', 'FULL OUTER', 'INNER', 'CROSS'])
   const SOURCE = stringifyFrom(source)
   const ON = on ? sql` ON ${condition(on)}` : sql``
-  const USING = using ? sql` USING ( ${sv(using.map(el => identifier(el)))} )` : sql``
+  const USING = using ? sql` USING ( ${sql.join(using.map(el => sql.ident(el)))} )` : sql``
   return sql`${NATURAL}${TYPE} JOIN ${SOURCE}${ON}${USING}`
 }
 

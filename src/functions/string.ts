@@ -1,6 +1,5 @@
 import { Expression, expression } from '../expressions'
-import { sql, sv } from '../template'
-import { keyword } from '../template/keyword'
+import { sql } from '../template'
 import {
   ArrayType,
   BitArg,
@@ -43,7 +42,7 @@ export function LOWER (arg: CharacterArg): Expression<TextType> {
  * This function can only be used when the server encoding is UTF8.
  */
 export function NORMALIZE (arg: CharacterArg, form?: 'NFC' | 'NFD' | 'NFKC' | 'NFKD'): Expression<TextType> {
-  const formkw = form ? sql`, ${keyword(form, ['NFC', 'NFD', 'NFKC', 'NFKD'])}` : sql``
+  const formkw = form ? sql`, ${sql.keyword(form, ['NFC', 'NFD', 'NFKC', 'NFKD'])}` : sql``
   return expression`NORMALIZE(${arg}${formkw})`
 }
 
@@ -87,7 +86,7 @@ export function SUBSTRING (
 export function TRIM (from: ByteaArg, chars: ByteaArg, type?: 'BOTH'): Expression<ByteaType>
 export function TRIM (from: CharacterArg, chars?: CharacterArg, type?: 'LEADING' | 'TRAILING' | 'BOTH'): Expression<TextType>
 export function TRIM (from: CharacterArg | ByteaArg, chars?: CharacterArg | ByteaArg, type?: 'LEADING' | 'TRAILING' | 'BOTH'): Expression<TextType> | Expression<ByteaType> {
-  const TYPE = type !== undefined ? sql`${keyword(type, ['LEADING', 'TRAILING', 'BOTH'])} ` : sql``
+  const TYPE = type !== undefined ? sql`${sql.keyword(type, ['LEADING', 'TRAILING', 'BOTH'])} ` : sql``
   const CHARS = chars !== undefined ? sql`${chars} ` : sql``
   return expression`TRIM(${TYPE}${CHARS}FROM ${from})`
 }
@@ -103,23 +102,23 @@ export function ASCII (arg: CharacterArg): Expression<IntegerType> {
 export function BTRIM (str: CharacterArg, chars?: CharacterArg): Expression<TextType>
 export function BTRIM (str: ByteaArg, chars?: ByteaArg): Expression<ByteaType>
 export function BTRIM (str: CharacterArg | ByteaArg, chars?: CharacterArg | ByteaArg): Expression<TextType> | Expression<ByteaType> {
-  return expression`BTRIM(${sv([...arguments])})`
+  return expression`BTRIM(${sql.join([...arguments])})`
 }
 
 export function CHR (code: IntegerArg): Expression<TextType> {
-  return expression`CHR(${sv([...arguments])})`
+  return expression`CHR(${sql.join([...arguments])})`
 }
 
 export function CONCAT (...args: any[]): Expression<TextType> {
-  return expression`CONCAT(${sv([...args])})`
+  return expression`CONCAT(${sql.join([...args])})`
 }
 
 export function CONCAT_WS (separator: CharacterArg, ...args: any[]): Expression<TextType> {
-  return expression`CONCAT_WS(${separator}, ${sv([...args])})`
+  return expression`CONCAT_WS(${separator}, ${sql.join([...args])})`
 }
 
 export function FORMAT (format: CharacterArg, ...args: any[]): Expression<TextType> {
-  return expression`FORMAT(${format}, ${sv([...args])})`
+  return expression`FORMAT(${format}, ${sql.join([...args])})`
 }
 
 export function INITCAP (arg: CharacterArg): Expression<TextType> {
@@ -133,15 +132,15 @@ export function LEFT (str: CharacterArg, count: IntegerArg): Expression<TextType
 export function LENGTH (arg: CharacterArg | TSVectorArg | BitArg): Expression<IntegerType>
 export function LENGTH (arg: ByteaArg, encoding?: CharacterArg): Expression<IntegerType>
 export function LENGTH (arg: CharacterArg | ByteaArg | BitArg | TSVectorArg, encoding?: CharacterArg): Expression<IntegerType> {
-  return expression`LENGTH(${sv([...arguments])})`
+  return expression`LENGTH(${sql.join([...arguments])})`
 }
 
 export function LPAD (str: CharacterArg, count: IntegerArg, fill?: CharacterArg): Expression<TextType> {
-  return expression`LPAD(${sv([...arguments])})`
+  return expression`LPAD(${sql.join([...arguments])})`
 }
 
 export function LTRIM (str: CharacterArg, chars?: CharacterArg): Expression<TextType> {
-  return expression`LTRIM(${sv([...arguments])})`
+  return expression`LTRIM(${sql.join([...arguments])})`
 }
 
 export function MD5 (arg: CharacterArg | ByteaArg): Expression<TextType> {
@@ -149,7 +148,7 @@ export function MD5 (arg: CharacterArg | ByteaArg): Expression<TextType> {
 }
 
 export function PARSE_IDENT (arg: CharacterArg, strict?: BooleanArg): Expression<ArrayType<TextType>> {
-  return expression`PARSE_IDENT(${sv([...arguments])})`
+  return expression`PARSE_IDENT(${sql.join([...arguments])})`
 }
 
 export function PG_CLIENT_ENCODING (): Expression<TextType> {
@@ -169,65 +168,65 @@ export function QUOTE_NULLABLE (arg: any): Expression<TextType> {
 }
 
 export function REGEXP_MATCH (str: CharacterArg, regexp: CharacterArg, flags?: CharacterArg): Expression<ArrayType<TextType>> {
-  return expression`REGEXP_MATCH(${sv([...arguments])})`
+  return expression`REGEXP_MATCH(${sql.join([...arguments])})`
 }
 
 export function REGEXP_MATCHES (str: CharacterArg, regexp: CharacterArg, flags?: CharacterArg): Expression<ArrayType<TextType>> {
-  return expression`REGEXP_MATCHES(${sv([...arguments])})`
+  return expression`REGEXP_MATCHES(${sql.join([...arguments])})`
 }
 
 export function REGEXP_REPLACE (str: CharacterArg, regexp: CharacterArg, replacement: CharacterArg, flags?: CharacterArg): Expression<TextType> {
-  return expression`REGEXP_REPLACE(${sv([...arguments])})`
+  return expression`REGEXP_REPLACE(${sql.join([...arguments])})`
 }
 
 export function REGEXP_SPLIT_TO_ARRAY (str: CharacterArg, regexp: CharacterArg, flags?: CharacterArg): Expression<ArrayType<TextType>> {
-  return expression`REGEXP_SPLIT_TO_ARRAY(${sv([...arguments])})`
+  return expression`REGEXP_SPLIT_TO_ARRAY(${sql.join([...arguments])})`
 }
 
 export function REGEXP_SPLIT_TO_TABLE (str: CharacterArg, regexp: CharacterArg, flags?: CharacterArg): Expression<TextType> {
-  return expression`REGEXP_SPLIT_TO_TABLE(${sv([...arguments])})`
+  return expression`REGEXP_SPLIT_TO_TABLE(${sql.join([...arguments])})`
 }
 
 export function REPEAT (str: CharacterArg, count: IntegerArg): Expression<TextType> {
-  return expression`REPEAT(${sv([...arguments])})`
+  return expression`REPEAT(${sql.join([...arguments])})`
 }
 
 export function REPLACE (str: CharacterArg, from: CharacterArg, to: CharacterArg): Expression<TextType> {
-  return expression`REPLACE(${sv([...arguments])})`
+  return expression`REPLACE(${sql.join([...arguments])})`
 }
 
 export function REVERSE (str: CharacterArg): Expression<TextType> {
-  return expression`REVERSE(${sv([...arguments])})`
+  return expression`REVERSE(${sql.join([...arguments])})`
 }
 
 export function RIGHT (str: CharacterArg, count: IntegerArg): Expression<TextType> {
-  return expression`RIGHT(${sv([...arguments])})`
+  return expression`RIGHT(${sql.join([...arguments])})`
 }
 
 export function RPAD (str: CharacterArg, count: IntegerArg, pad?: CharacterArg): Expression<TextType> {
-  return expression`RPAD(${sv([...arguments])})`
+  return expression`RPAD(${sql.join([...arguments])})`
 }
 
 export function RTRIM (str: CharacterArg, chars?: CharacterArg): Expression<TextType> {
-  return expression`RTRIM(${sv([...arguments])})`
+  return expression`RTRIM(${sql.join([...arguments])})`
 }
 
 export function SPLIT_PART (str: CharacterArg, separator: CharacterArg, limit: IntegerArg): Expression<TextType> {
-  return expression`SPLIT_PART(${sv([...arguments])})`
+  return expression`SPLIT_PART(${sql.join([...arguments])})`
 }
 
 export function STRPOS (str: CharacterArg, find: CharacterArg): Expression<IntegerType> {
-  return expression`STRPOS(${sv([...arguments])})`
+  return expression`STRPOS(${sql.join([...arguments])})`
 }
 
 export function SUBSTR (str: CharacterArg, start: IntegerArg, length?: IntegerArg): Expression<TextType>
 export function SUBSTR (str: ByteaArg, start: IntegerArg, length?: IntegerArg): Expression<ByteaType>
 export function SUBSTR (str: CharacterArg | ByteaArg, start: IntegerArg, length?: IntegerArg): Expression<TextType> | Expression<ByteaType> {
-  return expression`SUBSTR(${sv([...arguments])})`
+  return expression`SUBSTR(${sql.join([...arguments])})`
 }
 
 export function STARTS_WITH (str: CharacterArg, prefix: CharacterArg): Expression<BooleanType> {
-  return expression`STARTS_WITH(${sv([...arguments])})`
+  return expression`STARTS_WITH(${sql.join([...arguments])})`
 }
 
 /**
@@ -238,20 +237,20 @@ export function STARTS_WITH (str: CharacterArg, prefix: CharacterArg): Expressio
  * (See the unaccent module for another, more flexible solution.)
  */
 export function TO_ASCII (str: CharacterArg, encoding?: IntegerArg): Expression<TextType> {
-  return expression`TO_ASCII(${sv([...arguments])})`
+  return expression`TO_ASCII(${sql.join([...arguments])})`
 }
 
 export function TO_HEX (str: BigintArg): Expression<TextType> {
-  return expression`TO_HEX(${sv([...arguments])})`
+  return expression`TO_HEX(${sql.join([...arguments])})`
 }
 
 export function TRANSLATE (str: CharacterArg, from: CharacterArg, to: CharacterArg): Expression<TextType> {
-  return expression`TRANSLATE(${sv([...arguments])})`
+  return expression`TRANSLATE(${sql.join([...arguments])})`
 }
 
 export function TO_CHAR (from: TimestampArg, to: CharacterArg): Expression<TextType>
 export function TO_CHAR (from: IntervalArg, to: CharacterArg): Expression<TextType>
 export function TO_CHAR (from: MathArg, to: CharacterArg): Expression<TextType>
 export function TO_CHAR (from: MathArg | IntervalArg | TimestampArg, to: CharacterArg): Expression<TextType> {
-  return expression`TO_CHAR(${sv([...arguments])})`
+  return expression`TO_CHAR(${sql.join([...arguments])})`
 }

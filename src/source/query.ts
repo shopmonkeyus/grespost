@@ -1,6 +1,6 @@
 import { Source } from '.'
 import { AnyExpression, expression } from '../expressions'
-import { sql, sv, Template, identifier, eident } from '../template'
+import { sql, Template, eident } from '../template'
 
 export type Query<T extends Record<string, AnyExpression> = any> = QuerySource<T> & T
 
@@ -13,7 +13,7 @@ export class QuerySource<T extends Record<string, AnyExpression> = Record<string
     keys.forEach((key) => {
       Object.defineProperty(this, key, {
         enumerable: true,
-        get: () => expression`${ident.$}.${identifier(key.toString())}`
+        get: () => expression`${ident.$}.${sql.ident(key.toString())}`
       })
     })
 
@@ -88,8 +88,8 @@ export class QueryDefinition<T extends Record<string, AnyExpression> = Record<st
   }
 
   toSource (): Template {
-    const columns = this.columns && this.columns.length ? sql` ( ${sv(this.columns.map(el => identifier(el)))} )` : sql``
-    const AS_ALIAS = this.alias ? sql` AS ${identifier(this.alias)}${columns}` : sql``
-    return sql`${this.cteAlias ? identifier(this.cteAlias) : sql`( ${this.tmpl} )`}${AS_ALIAS}`
+    const columns = this.columns && this.columns.length ? sql` ( ${sql.join(this.columns.map(el => sql.ident(el)))} )` : sql``
+    const AS_ALIAS = this.alias ? sql` AS ${sql.ident(this.alias)}${columns}` : sql``
+    return sql`${this.cteAlias ? sql.ident(this.cteAlias) : sql`( ${this.tmpl} )`}${AS_ALIAS}`
   }
 }

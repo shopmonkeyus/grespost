@@ -1,7 +1,6 @@
 import { stringifyOrderBy } from '..'
 import { AnyExpression, condition, Condition, Expression, expression, ToType } from '../expressions'
-import { sql, sv } from '../template'
-import { keyword } from '../template/keyword'
+import { sql } from '../template'
 import {
   ArrayType,
   BooleanArg,
@@ -50,14 +49,14 @@ export interface AggregateConfig {
 }
 
 export const stringifyAggregateConfig = (args: any[], config?: AggregateConfig) => {
-  if (!config) return sql`(${sv(args)})`
+  if (!config) return sql`(${sql.join(args)})`
 
   const DISTINCT = config.distinct !== undefined ? config.distinct ? sql`DISTINCT ` : sql`ALL ` : sql``
-  const ORDERING = config.orderBy ? sql` ORDER BY ${sv(config.orderBy.map(stringifyOrderBy))}` : sql``
-  const WITHING_GROUP = config.withinGroup ? sql` WITHIN GROUP ( ORDER BY ${sv(config.withinGroup.map(stringifyOrderBy))} )` : sql``
+  const ORDERING = config.orderBy ? sql` ORDER BY ${sql.join(config.orderBy.map(stringifyOrderBy))}` : sql``
+  const WITHING_GROUP = config.withinGroup ? sql` WITHIN GROUP ( ORDER BY ${sql.join(config.withinGroup.map(stringifyOrderBy))} )` : sql``
   const FILTER_WHERE = config.filterWhere ? sql` FILTER ( WHERE ${condition(config.filterWhere)} )` : sql``
 
-  return sql`(${DISTINCT}${sv(args)}${ORDERING})${WITHING_GROUP}${FILTER_WHERE}`
+  return sql`(${DISTINCT}${sql.join(args)}${ORDERING})${WITHING_GROUP}${FILTER_WHERE}`
 }
 
 /**
@@ -131,7 +130,7 @@ export function BOOL_OR (arg: BooleanArg, aggregateConfig?: AggregateConfig): Ex
  * @signature count ( * ) → bigint
  */
 export function COUNT (arg: AnyExpression | '*', aggregateConfig?: AggregateConfig): Expression<BigintType> {
-  return expression`COUNT${stringifyAggregateConfig([arg === '*' ? keyword('*') : arg], aggregateConfig)}`
+  return expression`COUNT${stringifyAggregateConfig([arg === '*' ? sql.keyword('*') : arg], aggregateConfig)}`
 }
 
 /**

@@ -1,6 +1,6 @@
 import { LOWER } from '../../../functions/string'
 import { source } from '../../../source'
-import { keyword } from '../../../template'
+import { sql } from '../../../template'
 import { VARCHAR } from '../../../types'
 import { stringifyCreateIndex } from '../create'
 
@@ -74,7 +74,7 @@ describe('create index query', () => {
   it('expression', () => {
     expect(stringifyCreateIndex({
       table: table,
-      using: keyword('IDX'),
+      using: sql.keyword('IDX'),
       columns: [{ expression: LOWER(table.id) }]
     }).toQuery()).toEqual(['CREATE INDEX ON "table" USING IDX ( ( LOWER("table".id) ) )', []])
   })

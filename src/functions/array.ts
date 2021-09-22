@@ -1,9 +1,9 @@
 import { Type, ArrayType, ArrayArg, CharacterArg, TextType, IntegerArg, IntegerType, TSVectorArg } from '../types'
 import { Expression, expression, ToType } from '../expressions'
-import { sv } from '../template'
+import { sql } from '../template'
 
 export function ARR <T> (...args: T[]): Expression<ArrayType<ToType<T>>> {
-  return expression`ARRAY[${sv(args)}]`
+  return expression`ARRAY[${sql.join(args)}]`
 }
 
 /**
@@ -13,7 +13,7 @@ export function ARR <T> (...args: T[]): Expression<ArrayType<ToType<T>>> {
  * @example array_append(ARRAY[1,2], 3) → {1,2,3}
  */
 export function ARRAY_APPEND <T extends Type = Type> (array: ArrayArg<T>, element: T['argument']): Expression<ArrayType<T>> {
-  return expression`ARRAY_APPEND(${sv([...arguments])})`
+  return expression`ARRAY_APPEND(${sql.join([...arguments])})`
 }
 
 /**
@@ -22,7 +22,7 @@ export function ARRAY_APPEND <T extends Type = Type> (array: ArrayArg<T>, elemen
  * @example array_cat(ARRAY[1,2,3], ARRAY[4,5]) → {1,2,3,4,5}
  */
 export function ARRAY_CAT <T extends Type = Type> (a: ArrayArg<T>, b: ArrayArg<T>): Expression<ArrayType<T>> {
-  return expression`ARRAY_CAT(${sv([...arguments])})`
+  return expression`ARRAY_CAT(${sql.join([...arguments])})`
 }
 
 /**
@@ -31,7 +31,7 @@ export function ARRAY_CAT <T extends Type = Type> (a: ArrayArg<T>, b: ArrayArg<T
  * @example array_dims(ARRAY[[1,2,3], [4,5,6]]) → [1:2][1:3]
  */
 export function ARRAY_DIMS (arr: ArrayArg): Expression<TextType> {
-  return expression`ARRAY_DIMS(${sv([...arguments])})`
+  return expression`ARRAY_DIMS(${sql.join([...arguments])})`
 }
 
 /**
@@ -43,7 +43,7 @@ export function ARRAY_DIMS (arr: ArrayArg): Expression<TextType> {
  * array_fill(7, ARRAY[3], ARRAY[2]) → [2:4]={7,7,7}
  */
 export function ARRAY_FILL <T extends Type> (value: T['argument'], dims: ArrayArg<IntegerType>, dims2?: ArrayArg<IntegerType>): Expression<ArrayType<T>> {
-  return expression`ARRAY_FILL(${sv([...arguments])})`
+  return expression`ARRAY_FILL(${sql.join([...arguments])})`
 }
 
 /**
@@ -52,7 +52,7 @@ export function ARRAY_FILL <T extends Type> (value: T['argument'], dims: ArrayAr
  * @example array_length(array[1,2,3], 1) → 3
  */
 export function ARRAY_LENGTH (arr: ArrayArg, dim: IntegerArg): Expression<IntegerType> {
-  return expression`ARRAY_LENGTH(${sv([...arguments])})`
+  return expression`ARRAY_LENGTH(${sql.join([...arguments])})`
 }
 
 /**
@@ -61,7 +61,7 @@ export function ARRAY_LENGTH (arr: ArrayArg, dim: IntegerArg): Expression<Intege
  * @example array_lower('[0:2]={1,2,3}'::integer[], 1) → 0
  */
 export function ARRAY_LOWER (arr: ArrayArg, dim: IntegerArg): Expression<IntegerType> {
-  return expression`ARRAY_LOWER(${sv([...arguments])})`
+  return expression`ARRAY_LOWER(${sql.join([...arguments])})`
 }
 
 /**
@@ -70,7 +70,7 @@ export function ARRAY_LOWER (arr: ArrayArg, dim: IntegerArg): Expression<Integer
  * @example array_ndims(ARRAY[[1,2,3], [4,5,6]]) → 2
  */
 export function ARRAY_NDIMS (arr: ArrayArg): Expression<IntegerType> {
-  return expression`ARRAY_NDIMS(${sv([...arguments])})`
+  return expression`ARRAY_NDIMS(${sql.join([...arguments])})`
 }
 
 /**
@@ -83,7 +83,7 @@ export function ARRAY_NDIMS (arr: ArrayArg): Expression<IntegerType> {
  * @example array_position(ARRAY['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'], 'mon') → 2
  */
 export function ARRAY_POSITION <T extends Type> (arr: ArrayArg<T>, el: T['argument'], dim?: IntegerArg): Expression<IntegerType> {
-  return expression`ARRAY_POSITION(${sv([...arguments])})`
+  return expression`ARRAY_POSITION(${sql.join([...arguments])})`
 }
 
 /**
@@ -97,7 +97,7 @@ export function ARRAY_POSITION <T extends Type> (arr: ArrayArg<T>, el: T['argume
  * @example array_positions(ARRAY['A','A','B','A'], 'A') → {1,2,4}
  */
 export function ARRAY_POSITIONS <T extends Type> (arr: ArrayArg<T>, el: T['argument']): Expression<ArrayType<IntegerType>> {
-  return expression`ARRAY_POSITIONS(${sv([...arguments])})`
+  return expression`ARRAY_POSITIONS(${sql.join([...arguments])})`
 }
 
 /**
@@ -107,7 +107,7 @@ export function ARRAY_POSITIONS <T extends Type> (arr: ArrayArg<T>, el: T['argum
  * @example array_prepend(1, ARRAY[2,3]) → {1,2,3}
  */
 export function ARRAY_PREPEND <T extends Type> (el: T['argument'], arr: ArrayArg<T>): Expression<ArrayType<T>> {
-  return expression`ARRAY_PREPEND(${sv([...arguments])})`
+  return expression`ARRAY_PREPEND(${sql.join([...arguments])})`
 }
 
 /**
@@ -118,7 +118,7 @@ export function ARRAY_PREPEND <T extends Type> (el: T['argument'], arr: ArrayArg
  * @example array_remove(ARRAY[1,2,3,2], 2) → {1,3}
  */
 export function ARRAY_REMOVE <T extends Type> (arr: ArrayArg<T>, el: T['argument']): Expression<ArrayType<T>> {
-  return expression`ARRAY_REMOVE(${sv([...arguments])})`
+  return expression`ARRAY_REMOVE(${sql.join([...arguments])})`
 }
 
 /**
@@ -128,7 +128,7 @@ export function ARRAY_REMOVE <T extends Type> (arr: ArrayArg<T>, el: T['argument
  * @example array_replace(ARRAY[1,2,5,4], 5, 3) → {1,2,3,4}
  */
 export function ARRAY_REPLACE <T extends Type> (arr: ArrayArg<T>, from: T['argument'], to: T['argument']): Expression<ArrayType<T>> {
-  return expression`ARRAY_REPLACE(${sv([...arguments])})`
+  return expression`ARRAY_REPLACE(${sql.join([...arguments])})`
 }
 
 /**
@@ -140,7 +140,7 @@ export function ARRAY_REPLACE <T extends Type> (arr: ArrayArg<T>, from: T['argum
  * @example array_to_string(ARRAY[1, 2, 3, NULL, 5], ',', '*') → 1,2,3,*,5
  */
 export function ARRAY_TO_STRING (array: ArrayArg, delimiter: CharacterArg, nulls?: CharacterArg): Expression<TextType> {
-  return expression`ARRAY_TO_STRING(${sv([...arguments])})`
+  return expression`ARRAY_TO_STRING(${sql.join([...arguments])})`
 }
 
 /**
@@ -149,7 +149,7 @@ export function ARRAY_TO_STRING (array: ArrayArg, delimiter: CharacterArg, nulls
  * @example array_upper(ARRAY[1,8,3,7], 1) → 4
  */
 export function ARRAY_UPPER (arr: ArrayArg, dim: IntegerArg): Expression<IntegerType> {
-  return expression`ARRAY_UPPER(${sv([...arguments])})`
+  return expression`ARRAY_UPPER(${sql.join([...arguments])})`
 }
 
 /**
@@ -159,7 +159,7 @@ export function ARRAY_UPPER (arr: ArrayArg, dim: IntegerArg): Expression<Integer
  * @example cardinality(ARRAY[[1,2],[3,4]]) → 4
  */
 export function CARDINALITY (arr: ArrayArg): Expression<IntegerType> {
-  return expression`CARDINALITY(${sv([...arguments])})`
+  return expression`CARDINALITY(${sql.join([...arguments])})`
 }
 
 /**
@@ -173,7 +173,7 @@ export function CARDINALITY (arr: ArrayArg): Expression<IntegerType> {
  * @example string_to_array('xx~~yy~~zz', '~~', 'yy') → {xx,NULL,zz}
  */
 export function STRING_TO_ARRAY (string: CharacterArg, delimiter: CharacterArg, nulls: CharacterArg): Expression<ArrayType<TextType>> {
-  return expression`STRING_TO_ARRAY(${sv([...arguments])})`
+  return expression`STRING_TO_ARRAY(${sql.join([...arguments])})`
 }
 
 /**
@@ -190,7 +190,7 @@ export function STRING_TO_ARRAY (string: CharacterArg, delimiter: CharacterArg, 
  *  quux
  */
 export function UNNEST <T extends Type> (arr: ArrayArg<T> | TSVectorArg): T['expression'] {
-  return expression`UNNEST(${sv([...arguments])})`
+  return expression`UNNEST(${sql.join([...arguments])})`
 }
 
 // /**
@@ -207,5 +207,5 @@ export function UNNEST <T extends Type> (arr: ArrayArg<T> | TSVectorArg): T['exp
 //  *    | baz
 //  */
 // export function UNNEST (ANYARRAY, ANYARRAY [, ... ]): SETOF ANYELEMENT, ANYELEMENT [, ... ] {
-//   return expression`UNNEST(${sv([...arguments])})`
+//   return expression`UNNEST(${sql.join([...arguments])})`
 // }

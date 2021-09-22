@@ -1,10 +1,9 @@
 import { BooleanType, DateType, DoubleType, CharacterArg, TimeType, TimestampType, TimestampArg, DoubleArg, IntegerArg, DateArg, IntervalArg, TimeArg, TextType, IntervalType } from '../types'
 import { Expression, expression } from '../expressions'
-import { sql, sv } from '../template'
-import { keyword } from '../template/keyword'
+import { sql } from '../template'
 
 export function AGE (a: TimestampArg, b?: TimestampArg): Expression<IntervalType> {
-  return expression`AGE(${sv([...arguments])})`
+  return expression`AGE(${sql.join([...arguments])})`
 }
 
 export function CLOCK_TIMESTAMP ():Expression<TimestampType> {
@@ -16,54 +15,54 @@ export function CURRENT_DATE (): Expression<DateType> {
 }
 
 export function CURRENT_TIME (precision?: IntegerArg): Expression<TimeType> {
-  return expression`CURRENT_TIME${sv([...arguments], ',', '()')}`
+  return expression`CURRENT_TIME${sql.join([...arguments], ',', '()')}`
 }
 
 export function CURRENT_TIMESTAMP (precision?: IntegerArg):Expression<TimestampType> {
-  return expression`CURRENT_TIMESTAMP${sv([...arguments], ',', '()')}`
+  return expression`CURRENT_TIMESTAMP${sql.join([...arguments], ',', '()')}`
 }
 
 export function DATE_PART (a: CharacterArg, b: TimestampArg | IntervalArg): Expression<DoubleType> {
-  return expression`DATE_PART(${sv([...arguments])})`
+  return expression`DATE_PART(${sql.join([...arguments])})`
 }
 
 export function DATE_TRUNC (a: CharacterArg, b: TimestampArg): Expression<TimestampType>
 export function DATE_TRUNC (a: CharacterArg, b: TimestampArg, c: CharacterArg): Expression<TimestampType>
 export function DATE_TRUNC (a: CharacterArg, b: IntervalArg): Expression<IntervalType>
 export function DATE_TRUNC (a: CharacterArg, b: TimestampArg | Expression<IntervalType>, c?: CharacterArg):Expression<TimestampType>| Expression<IntervalType> {
-  return expression`DATE_TRUNC(${sv([...arguments])})`
+  return expression`DATE_TRUNC(${sql.join([...arguments])})`
 }
 
 export function EXTRACT (field: CharacterArg, from: TimestampArg | IntervalArg): Expression<DoubleType> {
-  return expression`EXTRACT(${sv([...arguments])})`
+  return expression`EXTRACT(${sql.join([...arguments])})`
 }
 
 export function ISFINITE (date: DateArg | IntervalArg | TimestampArg): Expression<BooleanType> {
-  return expression`ISFINITE(${sv([...arguments])})`
+  return expression`ISFINITE(${sql.join([...arguments])})`
 }
 
 export function JUSTIFY_DAYS (interval: IntervalArg): Expression<IntervalType> {
-  return expression`JUSTIFY_DAYS(${sv([...arguments])})`
+  return expression`JUSTIFY_DAYS(${sql.join([...arguments])})`
 }
 
 export function JUSTIFY_HOURS (interval: IntervalArg): Expression<IntervalType> {
-  return expression`JUSTIFY_HOURS(${sv([...arguments])})`
+  return expression`JUSTIFY_HOURS(${sql.join([...arguments])})`
 }
 
 export function JUSTIFY_INTERVAL (interval: IntervalArg): Expression<IntervalType> {
-  return expression`JUSTIFY_INTERVAL(${sv([...arguments])})`
+  return expression`JUSTIFY_INTERVAL(${sql.join([...arguments])})`
 }
 
 export function LOCALTIME (precision?: IntegerArg): Expression<TimeType> {
-  return expression`LOCALTIME${sv([...arguments], ',', '()')}`
+  return expression`LOCALTIME${sql.join([...arguments], ',', '()')}`
 }
 
 export function LOCALTIMESTAMP (precision?: IntegerArg):Expression<TimestampType> {
-  return expression`LOCALTIMESTAMP${sv([...arguments], ',', '()')}`
+  return expression`LOCALTIMESTAMP${sql.join([...arguments], ',', '()')}`
 }
 
 export function MAKE_DATE (year: IntegerArg, month: IntegerArg, day: IntegerArg): Expression<DateType> {
-  return expression`MAKE_DATE(${sv([...arguments])})`
+  return expression`MAKE_DATE(${sql.join([...arguments])})`
 }
 
 interface IntervalMaker {
@@ -78,8 +77,8 @@ interface IntervalMaker {
 
 export function MAKE_INTERVAL (interval: IntervalMaker): Expression<IntervalType> {
   const ops = Object.entries(interval).map(([key, value]) =>
-    expression`${keyword(key, ['YEARS', 'MONTHS', 'WEEKS', 'DAYS', 'HOURS', 'MINS', 'SECS'])} => ${value}`)
-  return expression`MAKE_INTERVAL(${sv(ops)})`
+    expression`${sql.keyword(key, ['YEARS', 'MONTHS', 'WEEKS', 'DAYS', 'HOURS', 'MINS', 'SECS'])} => ${value}`)
+  return expression`MAKE_INTERVAL(${sql.join(ops)})`
 }
 
 export function MAKE_TIME (
@@ -87,7 +86,7 @@ export function MAKE_TIME (
   minute: IntegerArg,
   second: DoubleArg
 ): Expression<TimeType> {
-  return expression`MAKE_TIME(${sv([...arguments])})`
+  return expression`MAKE_TIME(${sql.join([...arguments])})`
 }
 
 export function MAKE_TIMESTAMP (
@@ -98,7 +97,7 @@ export function MAKE_TIMESTAMP (
   minute: IntegerArg,
   second: DoubleArg
 ):Expression<TimestampType> {
-  return expression`MAKE_TIMESTAMP(${sv([...arguments])})`
+  return expression`MAKE_TIMESTAMP(${sql.join([...arguments])})`
 }
 
 export function MAKE_TIMESTAMPTZ (
@@ -110,7 +109,7 @@ export function MAKE_TIMESTAMPTZ (
   second: DoubleArg,
   timezone?: CharacterArg
 ):Expression<TimestampType> {
-  return expression`MAKE_TIMESTAMPTZ(${sv([...arguments])})`
+  return expression`MAKE_TIMESTAMPTZ(${sql.join([...arguments])})`
 }
 
 export function NOW ():Expression<TimestampType> {
@@ -139,9 +138,9 @@ export function OVERLAPS <T extends DateArg | TimeArg | TimestampArg> (
 export function TO_TIMESTAMP (a: DoubleArg): Expression<TimestampType>
 export function TO_TIMESTAMP (date: CharacterArg, to: CharacterArg): Expression<TimestampType>
 export function TO_TIMESTAMP (date: CharacterArg | DoubleArg, to?: CharacterArg):Expression<TimestampType> {
-  return expression`TO_TIMESTAMP(${sv([...arguments])})`
+  return expression`TO_TIMESTAMP(${sql.join([...arguments])})`
 }
 
 export function TO_DATE (date: CharacterArg, to: CharacterArg): Expression<DateType> {
-  return expression`TO_DATE(${sv([...arguments])})`
+  return expression`TO_DATE(${sql.join([...arguments])})`
 }

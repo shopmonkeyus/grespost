@@ -1,14 +1,14 @@
 import { AnyExpression, condition, expression, Condition, Expression, ToType } from '../expressions'
 import { Type, IntegerType, ArrayArg, BooleanType } from '../types'
-import { sql, sv } from '../template'
+import { sql } from '../template'
 import { Query } from '..'
 
 export function NUM_NONNULLS (...args: (any)[]): Expression<IntegerType> {
-  return expression`NUM_NONNULLS(${sv([...args])})`
+  return expression`NUM_NONNULLS(${sql.join([...args])})`
 }
 
 export function NUM_NULLS (...args: (any)[]): Expression<IntegerType> {
-  return expression`NUM_NULLS(${sv([...args])})`
+  return expression`NUM_NULLS(${sql.join([...args])})`
 }
 
 export interface CaseConfig<T = any> { when: Condition, then: T }
@@ -16,11 +16,11 @@ export function CASE <T extends CaseConfig[], E> (cases: T, $else: E): Expressio
 export function CASE <T extends CaseConfig[]> (cases: T): Expression<ToType<T[number]['then']>>
 export function CASE (cases: CaseConfig[], $else?: any): AnyExpression {
   const whenThen = cases.map(({ when, then }) => sql`WHEN ${condition(when)} THEN ${then}`)
-  return expression`CASE ${sv(whenThen, ' ')}${$else ? sql` ELSE ${$else}` : sql``}`
+  return expression`CASE ${sql.join(whenThen, ' ')}${$else ? sql` ELSE ${$else}` : sql``}`
 }
 
 export function COALESCE <T extends any[]> (...args: T): Expression<ToType<T[number]>> {
-  return expression`COALESCE(${sv([...args])})`
+  return expression`COALESCE(${sql.join([...args])})`
 }
 
 export function NULLIF <T, V> (a: T, b: V): Expression<ToType<T>> | Expression<ToType<V>> {
@@ -28,11 +28,11 @@ export function NULLIF <T, V> (a: T, b: V): Expression<ToType<T>> | Expression<T
 }
 
 export function GREATEST <T extends any[]> (...args: T): Expression<ToType<T[number]>> {
-  return expression`GREATEST(${sv([...args])})`
+  return expression`GREATEST(${sql.join([...args])})`
 }
 
 export function LEAST <T extends any[]> (...args: T): Expression<ToType<T[number]>> {
-  return expression`LEAST(${sv([...args])})`
+  return expression`LEAST(${sql.join([...args])})`
 }
 
 export function ANY (arg: Query): any
@@ -58,5 +58,5 @@ export function EXISTS (subquery: Query): Expression<BooleanType> {
 }
 
 export function ROW (subquery: Query, ...args: any[]): Expression {
-  return expression`ROW(${sv(typeof subquery === 'object' && '$' in subquery ? [subquery.$] : [subquery, ...args])})`
+  return expression`ROW(${sql.join(typeof subquery === 'object' && '$' in subquery ? [subquery.$] : [subquery, ...args])})`
 }

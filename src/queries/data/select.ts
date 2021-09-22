@@ -1,7 +1,6 @@
 import { AnyExpression, condition, Condition, Expression, ToType, UnknownLiteral } from '../../expressions'
 import { QueryDefinition, Source } from '../../source'
-import { operator, sql, sv, Template } from '../../template'
-import { keyword } from '../../template/keyword'
+import { sql, Template } from '../../template'
 import { MathArg } from '../../types'
 import { FieldsConfig, stringifyFields } from '../common/fields'
 import { FromConfig, stringifyFrom } from '../common/from'
@@ -77,27 +76,27 @@ export const stringifySelect = (config: SelectConfig): Template => {
   const FIELDS = config.fields ? config.fields === '*' ? sql` *` : sql` ${stringifyFields(config.fields)}` : config.from ? sql` *` : sql``
   const FROM = config.from ? sql` FROM ${stringifyFrom(config.from)}` : sql``
   const WHERE = config.where ? sql` WHERE ${condition(config.where)}` : sql``
-  const GROUPING = config.groupBy ? sql` GROUP BY ${sv(config.groupBy.map(el => stringifyGroupedExpression(el)))}` : sql``
+  const GROUPING = config.groupBy ? sql` GROUP BY ${sql.join(config.groupBy.map(el => stringifyGroupedExpression(el)))}` : sql``
   const HAVING = config.having ? sql` HAVING ${condition(config.having)}` : sql``
-  const ORDERING = config.orderBy ? sql` ORDER BY ${sv(config.orderBy.map(stringifyOrderBy))}` : sql``
+  const ORDERING = config.orderBy ? sql` ORDER BY ${sql.join(config.orderBy.map(stringifyOrderBy))}` : sql``
   const LIMIT = config.limit ? sql` LIMIT ${config.limit === 'ALL' ? sql`ALL` : sql`${config.limit}`}` : sql``
   const OFFSET = config.offset ? sql` OFFSET ${stringifyOffset(config.offset)}` : sql``
   const FETCH = config.fetch ? sql` FETCH ${stringifyFetch(config.fetch)}` : sql``
-  const FOR = config.for ? sql` FOR ${sv(config.for.map(el => stringifyFor(el)), ' ')}` : sql``
+  const FOR = config.for ? sql` FOR ${sql.join(config.for.map(el => stringifyFor(el)), ' ')}` : sql``
 
   return sql`${WITH}SELECT${DISTINCT}${FIELDS}${FROM}${WHERE}${GROUPING}${HAVING}${ORDERING}${LIMIT}${OFFSET}${FETCH}${FOR}`
 }
 
 export const stringifyGroupedExpression = (config: (AnyExpression | AnyExpression[])): Template => {
-  return Array.isArray(config) ? sql`( ${sv(config)} )` : config
+  return Array.isArray(config) ? sql`( ${sql.join(config)} )` : config
 }
 
 export const stringifyOrderBy = (config: Exclude<SelectConfig['orderBy'], undefined>[number]): Template => {
   const { by, direction = undefined, nulls = undefined, using = undefined } = 'by' in config ? config : { by: config }
 
-  const DIRECTION = direction ? sql` ${keyword(direction, ['ASC', 'DESC'])}` : sql``
-  const USING = using ? sql` USING ${operator(using)}` : sql``
-  const NULLS = nulls ? sql` NULLS ${keyword(nulls, ['FIRST', 'LAST'])}` : sql``
+  const DIRECTION = direction ? sql` ${sql.keyword(direction, ['ASC', 'DESC'])}` : sql``
+  const USING = using ? sql` USING ${sql.operator(using)}` : sql``
+  const NULLS = nulls ? sql` NULLS ${sql.keyword(nulls, ['FIRST', 'LAST'])}` : sql``
 
   return sql`${by}${DIRECTION}${USING}${NULLS}`
 }
@@ -109,7 +108,7 @@ export const stringifyOffset = (config: MathArg | { start: MathArg, plurality?: 
       ? config
       : { start: config }
 
-  const PLURALITY = plurality ? sql` ${keyword(plurality, ['ROW', 'ROWS'])}` : sql``
+  const PLURALITY = plurality ? sql` ${sql.keyword(plurality, ['ROW', 'ROWS'])}` : sql``
   return sql`${start}${PLURALITY}`
 }
 
@@ -122,20 +121,20 @@ export const stringifyFetch = (config: Exclude<SelectConfig['fetch'], undefined>
 
   const ONLY = withTies ? sql`WITH TIES` : sql`ONLY`
 
-  return sql`${keyword(start, ['FIRST', 'NEXT'])} ${count} ${keyword(plurality, ['ROW', 'ROWS'])} ${ONLY}`
+  return sql`${sql.keyword(start, ['FIRST', 'NEXT'])} ${count} ${sql.keyword(plurality, ['ROW', 'ROWS'])} ${ONLY}`
 }
 
 export const stringifyFor = (config: Exclude<SelectConfig['for'], undefined>[number]): Template => {
   const { strength, of = undefined, waiting = undefined } = typeof config === 'string' ? { strength: config } : config
 
-  const STRENGTH = keyword(strength, ['UPDATE', 'NO KEY UPDATE', 'SHARE', 'KEY SHARE'])
-  const OF = of ? sql` OF ${sv(of.map(el => el.$))}` : sql``
-  const WAITING = waiting ? sql` ${keyword(waiting, ['NOWAIT', 'SKIP LOCKED'])}` : sql``
+  const STRENGTH = sql.keyword(strength, ['UPDATE', 'NO KEY UPDATE', 'SHARE', 'KEY SHARE'])
+  const OF = of ? sql` OF ${sql.join(of.map(el => el.$))}` : sql``
+  const WAITING = waiting ? sql` ${sql.keyword(waiting, ['NOWAIT', 'SKIP LOCKED'])}` : sql``
 
   return sql`${STRENGTH}${OF}${WAITING}`
 }
 
 export const stringifyDistinct = (config: boolean | AnyExpression[]): Template => {
   if (typeof config === 'boolean') return config ? sql`DISTINCT` : sql`ALL`
-  return sql`DISTINCT ON ( ${sv(config)} )`
+  return sql`DISTINCT ON ( ${sql.join(config)} )`
 }

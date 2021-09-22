@@ -1,6 +1,6 @@
 import { BooleanArg, BooleanType, IntegerType, JSONBType, JSONType, CharacterArg, TextType, ArrayArg, JSONArg, JSONBArg, TextArg, ArrayType } from '../types'
 import { AnyExpression, Expression, expression } from '../expressions'
-import { sv } from '../template'
+import { sql } from '../template'
 
 /**
  * @description Converts any SQL value to json or jsonb. Arrays and composites are
@@ -16,7 +16,7 @@ import { sv } from '../template'
  * to_jsonb(row(42, 'Fred said "Hi."'::text)) → {"f1": 42, "f2": "Fred said \"Hi.\""}
  */
 export function TO_JSON (arg: any): Expression<JSONType> {
-  return expression`TO_JSON(${sv([...arguments])})`
+  return expression`TO_JSON(${sql.join([...arguments])})`
 }
 
 /**
@@ -33,7 +33,7 @@ export function TO_JSON (arg: any): Expression<JSONType> {
  * to_jsonb(row(42, 'Fred said "Hi."'::text)) → {"f1": 42, "f2": "Fred said \"Hi.\""}
  */
 export function TO_JSONB (arg: any): Expression<JSONBType> {
-  return expression`TO_JSONB(${sv([...arguments])})`
+  return expression`TO_JSONB(${sql.join([...arguments])})`
 }
 
 /**
@@ -44,7 +44,7 @@ export function TO_JSONB (arg: any): Expression<JSONBType> {
  * @example array_to_json('{{1,5},{99,100}}'::int[]) → [[1,5],[99,100]]
  */
 export function ARRAY_TO_JSON (arg: ArrayArg, feeds?: BooleanArg): Expression<JSONType> {
-  return expression`ARRAY_TO_JSON(${sv([...arguments])})`
+  return expression`ARRAY_TO_JSON(${sql.join([...arguments])})`
 }
 
 /**
@@ -55,7 +55,7 @@ export function ARRAY_TO_JSON (arg: ArrayArg, feeds?: BooleanArg): Expression<JS
  * @example row_to_json(row(1,'foo')) → {"f1":1,"f2":"foo"}
  */
 export function ROW_TO_JSON (record: any, feeds?: BooleanArg): Expression<JSONType> {
-  return expression`ROW_TO_JSON(${sv([...arguments])})`
+  return expression`ROW_TO_JSON(${sql.join([...arguments])})`
 }
 
 /**
@@ -65,7 +65,7 @@ export function ROW_TO_JSON (record: any, feeds?: BooleanArg): Expression<JSONTy
  * @example json_build_array(1, 2, 'foo', 4, 5) → [1, 2, "foo", 4, 5]
  */
 export function JSON_BUILD_ARRAY (...args: any[]): Expression<JSONType> {
-  return expression`JSON_BUILD_ARRAY(${sv([...arguments])})`
+  return expression`JSON_BUILD_ARRAY(${sql.join([...arguments])})`
 }
 
 /**
@@ -75,7 +75,7 @@ export function JSON_BUILD_ARRAY (...args: any[]): Expression<JSONType> {
  * @example json_build_array(1, 2, 'foo', 4, 5) → [1, 2, "foo", 4, 5]
  */
 export function JSONB_BUILD_ARRAY (...args: any[]): Expression<JSONBType> {
-  return expression`JSONB_BUILD_ARRAY(${sv([...arguments])})`
+  return expression`JSONB_BUILD_ARRAY(${sql.join([...arguments])})`
 }
 
 /**
@@ -86,7 +86,7 @@ export function JSONB_BUILD_ARRAY (...args: any[]): Expression<JSONBType> {
  * @example json_build_object('foo', 1, 2, row(3,'bar')) → {"foo" : 1, "2" : {"f1":3,"f2":"bar"}}
  */
 export function JSON_BUILD_OBJECT (...args: any[]): Expression<JSONType> {
-  return expression`JSON_BUILD_OBJECT(${sv([...arguments])})`
+  return expression`JSON_BUILD_OBJECT(${sql.join([...arguments])})`
 }
 
 /**
@@ -97,7 +97,7 @@ export function JSON_BUILD_OBJECT (...args: any[]): Expression<JSONType> {
  * @example json_build_object('foo', 1, 2, row(3,'bar')) → {"foo" : 1, "2" : {"f1":3,"f2":"bar"}}
  */
 export function JSONB_BUILD_OBJECT (...args: any[]): Expression<JSONBType> {
-  return expression`JSONB_BUILD_OBJECT(${sv([...arguments])})`
+  return expression`JSONB_BUILD_OBJECT(${sql.join([...arguments])})`
 }
 
 /**
@@ -109,7 +109,7 @@ export function JSONB_BUILD_OBJECT (...args: any[]): Expression<JSONBType> {
 export function JSON_OBJECT (entries: ArrayArg<TextType> | ArrayArg<ArrayType<TextType>>): Expression<JSONType>
 export function JSON_OBJECT (keys: ArrayArg<TextType>, values: ArrayArg<TextType>): Expression<JSONType>
 export function JSON_OBJECT (keys: ArrayArg<TextType>, values?: ArrayArg<TextType>): Expression<JSONType> {
-  return expression`JSON_OBJECT(${sv([...arguments])})`
+  return expression`JSON_OBJECT(${sql.join([...arguments])})`
 }
 
 /**
@@ -121,7 +121,7 @@ export function JSON_OBJECT (keys: ArrayArg<TextType>, values?: ArrayArg<TextTyp
 export function JSONB_OBJECT (entries: ArrayArg<TextType> | ArrayArg<ArrayType<TextType>>): Expression<JSONBType>
 export function JSONB_OBJECT (keys: ArrayArg<TextType>, values: ArrayArg<TextType>): Expression<JSONBType>
 export function JSONB_OBJECT (keys: ArrayArg<TextType>, values?: ArrayArg<TextType>): Expression<JSONBType> {
-  return expression`JSONB_OBJECT(${sv([...arguments])})`
+  return expression`JSONB_OBJECT(${sql.join([...arguments])})`
 }
 
 /**
@@ -135,7 +135,7 @@ export function JSONB_OBJECT (keys: ArrayArg<TextType>, values?: ArrayArg<TextTy
  *  [2,false]
  */
 export function JSON_ARRAY_ELEMENTS (arg: JSONArg): Expression<JSONType> {
-  return expression`JSON_ARRAY_ELEMENTS(${sv([...arguments])})`
+  return expression`JSON_ARRAY_ELEMENTS(${sql.join([...arguments])})`
 }
 
 /**
@@ -149,7 +149,7 @@ export function JSON_ARRAY_ELEMENTS (arg: JSONArg): Expression<JSONType> {
  *  [2,false]
  */
 export function JSONB_ARRAY_ELEMENTS (arg: JSONBArg): Expression<JSONBType> {
-  return expression`JSONB_ARRAY_ELEMENTS(${sv([...arguments])})`
+  return expression`JSONB_ARRAY_ELEMENTS(${sql.join([...arguments])})`
 }
 
 /**
@@ -162,7 +162,7 @@ export function JSONB_ARRAY_ELEMENTS (arg: JSONBArg): Expression<JSONBType> {
  *  bar
  */
 export function JSON_ARRAY_ELEMENTS_TEXT (arg: JSONArg): Expression<TextType> {
-  return expression`JSON_ARRAY_ELEMENTS_TEXT(${sv([...arguments])})`
+  return expression`JSON_ARRAY_ELEMENTS_TEXT(${sql.join([...arguments])})`
 }
 
 /**
@@ -175,7 +175,7 @@ export function JSON_ARRAY_ELEMENTS_TEXT (arg: JSONArg): Expression<TextType> {
  *  bar
  */
 export function JSONB_ARRAY_ELEMENTS_TEXT (arg: JSONBArg): Expression<TextType> {
-  return expression`JSONB_ARRAY_ELEMENTS_TEXT(${sv([...arguments])})`
+  return expression`JSONB_ARRAY_ELEMENTS_TEXT(${sql.join([...arguments])})`
 }
 
 /**
@@ -184,7 +184,7 @@ export function JSONB_ARRAY_ELEMENTS_TEXT (arg: JSONBArg): Expression<TextType> 
  * @example json_array_length('[1,2,3,{"f1":1,"f2":[5,6]},4]') → 5
  */
 export function JSON_ARRAY_LENGTH (arg: JSONArg): Expression<IntegerType> {
-  return expression`JSON_ARRAY_LENGTH(${sv([...arguments])})`
+  return expression`JSON_ARRAY_LENGTH(${sql.join([...arguments])})`
 }
 
 /**
@@ -193,7 +193,7 @@ export function JSON_ARRAY_LENGTH (arg: JSONArg): Expression<IntegerType> {
  * @example json_array_length('[1,2,3,{"f1":1,"f2":[5,6]},4]') → 5
  */
 export function JSONB_ARRAY_LENGTH (arg: JSONBArg): Expression<IntegerType> {
-  return expression`JSONB_ARRAY_LENGTH(${sv([...arguments])})`
+  return expression`JSONB_ARRAY_LENGTH(${sql.join([...arguments])})`
 }
 
 /**
@@ -206,7 +206,7 @@ export function JSONB_ARRAY_LENGTH (arg: JSONBArg): Expression<IntegerType> {
  *  b   | "bar"
  */
 export function JSON_EACH (arg: JSONArg): AnyExpression {
-  return expression`JSON_EACH(${sv([...arguments])})`
+  return expression`JSON_EACH(${sql.join([...arguments])})`
 }
 
 /**
@@ -219,7 +219,7 @@ export function JSON_EACH (arg: JSONArg): AnyExpression {
  *  b   | "bar"
  */
 export function JSONB_EACH (arg: JSONBArg): AnyExpression {
-  return expression`JSONB_EACH(${sv([...arguments])})`
+  return expression`JSONB_EACH(${sql.join([...arguments])})`
 }
 
 /**
@@ -233,7 +233,7 @@ export function JSONB_EACH (arg: JSONBArg): AnyExpression {
  *  b   | bar
  */
 export function JSON_EACH_TEXT (arg: JSONArg): AnyExpression {
-  return expression`JSON_EACH_TEXT(${sv([...arguments])})`
+  return expression`JSON_EACH_TEXT(${sql.join([...arguments])})`
 }
 
 /**
@@ -247,7 +247,7 @@ export function JSON_EACH_TEXT (arg: JSONArg): AnyExpression {
  *  b   | bar
  */
 export function JSONB_EACH_TEXT (arg: JSONBArg): AnyExpression {
-  return expression`JSONB_EACH_TEXT(${sv([...arguments])})`
+  return expression`JSONB_EACH_TEXT(${sql.join([...arguments])})`
 }
 
 /**
@@ -258,7 +258,7 @@ export function JSONB_EACH_TEXT (arg: JSONBArg): AnyExpression {
  * @example json_extract_path('{"f2":{"f3":1},"f4":{"f5":99,"f6":"foo"}}', 'f4', 'f6') → "foo"
  */
 export function JSON_EXTRACT_PATH (from: JSONArg, ...path: TextArg[]): Expression<JSONType> {
-  return expression`JSON_EXTRACT_PATH(${sv([...arguments])})`
+  return expression`JSON_EXTRACT_PATH(${sql.join([...arguments])})`
 }
 
 /**
@@ -269,7 +269,7 @@ export function JSON_EXTRACT_PATH (from: JSONArg, ...path: TextArg[]): Expressio
  * @example json_extract_path('{"f2":{"f3":1},"f4":{"f5":99,"f6":"foo"}}', 'f4', 'f6') → "foo"
  */
 export function JSONB_EXTRACT_PATH (from: JSONBArg, ...path: TextArg[]): Expression<JSONBType> {
-  return expression`JSONB_EXTRACT_PATH(${sv([...arguments])})`
+  return expression`JSONB_EXTRACT_PATH(${sql.join([...arguments])})`
 }
 
 /**
@@ -279,7 +279,7 @@ export function JSONB_EXTRACT_PATH (from: JSONBArg, ...path: TextArg[]): Express
  * @example json_extract_path_text('{"f2":{"f3":1},"f4":{"f5":99,"f6":"foo"}}', 'f4', 'f6') → foo
  */
 export function JSON_EXTRACT_PATH_TEXT (from: JSONArg, ...path: TextArg[]): Expression<TextType> {
-  return expression`JSON_EXTRACT_PATH_TEXT(${sv([...arguments])})`
+  return expression`JSON_EXTRACT_PATH_TEXT(${sql.join([...arguments])})`
 }
 
 /**
@@ -289,7 +289,7 @@ export function JSON_EXTRACT_PATH_TEXT (from: JSONArg, ...path: TextArg[]): Expr
  * @example json_extract_path_text('{"f2":{"f3":1},"f4":{"f5":99,"f6":"foo"}}', 'f4', 'f6') → foo
  */
 export function JSONB_EXTRACT_PATH_TEXT (from: JSONBArg, ...path: TextArg[]): Expression<TextType> {
-  return expression`JSONB_EXTRACT_PATH_TEXT(${sv([...arguments])})`
+  return expression`JSONB_EXTRACT_PATH_TEXT(${sql.join([...arguments])})`
 }
 
 /**
@@ -302,7 +302,7 @@ export function JSONB_EXTRACT_PATH_TEXT (from: JSONBArg, ...path: TextArg[]): Ex
  *  f2
  */
 export function JSON_OBJECT_KEYS (arg: JSONArg): Expression<TextType> {
-  return expression`JSON_OBJECT_KEYS(${sv([...arguments])})`
+  return expression`JSON_OBJECT_KEYS(${sql.join([...arguments])})`
 }
 
 /**
@@ -315,7 +315,7 @@ export function JSON_OBJECT_KEYS (arg: JSONArg): Expression<TextType> {
  *  f2
  */
 export function JSONB_OBJECT_KEYS (arg: JSONBArg): Expression<TextType> {
-  return expression`JSONB_OBJECT_KEYS(${sv([...arguments])})`
+  return expression`JSONB_OBJECT_KEYS(${sql.join([...arguments])})`
 }
 
 /**
@@ -344,7 +344,7 @@ export function JSONB_OBJECT_KEYS (arg: JSONBArg): Expression<TextType> {
  *  1 | {2,"a b"} | (4,"a b c")
  */
 export function JSON_POPULATE_RECORD (base: any, from: JSONArg): AnyExpression {
-  return expression`JSON_POPULATE_RECORD(${sv([...arguments])})`
+  return expression`JSON_POPULATE_RECORD(${sql.join([...arguments])})`
 }
 
 /**
@@ -373,7 +373,7 @@ export function JSON_POPULATE_RECORD (base: any, from: JSONArg): AnyExpression {
  *  1 | {2,"a b"} | (4,"a b c")
  */
 export function JSONB_POPULATE_RECORD (base: any, from: JSONBArg): AnyExpression {
-  return expression`JSONB_POPULATE_RECORD(${sv([...arguments])})`
+  return expression`JSONB_POPULATE_RECORD(${sql.join([...arguments])})`
 }
 
 /**
@@ -389,7 +389,7 @@ export function JSONB_POPULATE_RECORD (base: any, from: JSONBArg): AnyExpression
  *  3 | 4
  */
 export function JSON_POPULATE_RECORDSET (base: any, from: JSONArg): AnyExpression {
-  return expression`JSON_POPULATE_RECORDSET(${sv([...arguments])})`
+  return expression`JSON_POPULATE_RECORDSET(${sql.join([...arguments])})`
 }
 
 /**
@@ -405,7 +405,7 @@ export function JSON_POPULATE_RECORDSET (base: any, from: JSONArg): AnyExpressio
  *  3 | 4
  */
 export function JSONB_POPULATE_RECORDSET (base: any, from: JSONBArg): AnyExpression {
-  return expression`JSONB_POPULATE_RECORDSET(${sv([...arguments])})`
+  return expression`JSONB_POPULATE_RECORDSET(${sql.join([...arguments])})`
 }
 
 /**
@@ -423,7 +423,7 @@ export function JSONB_POPULATE_RECORDSET (base: any, from: JSONBArg): AnyExpress
  *  1 | [1,2,3] | {1,2,3} |   | (123,"a b c")
  */
 export function JSON_TO_RECORD (arg: JSONArg): AnyExpression {
-  return expression`JSON_TO_RECORD(${sv([...arguments])})`
+  return expression`JSON_TO_RECORD(${sql.join([...arguments])})`
 }
 
 /**
@@ -441,7 +441,7 @@ export function JSON_TO_RECORD (arg: JSONArg): AnyExpression {
  *  1 | [1,2,3] | {1,2,3} |   | (123,"a b c")
  */
 export function JSONB_TO_RECORD (arg: JSONBArg): AnyExpression {
-  return expression`JSONB_TO_RECORD(${sv([...arguments])})`
+  return expression`JSONB_TO_RECORD(${sql.join([...arguments])})`
 }
 
 /**
@@ -458,7 +458,7 @@ export function JSONB_TO_RECORD (arg: JSONBArg): AnyExpression {
  *  2 |
  */
 export function JSON_TO_RECORDSET (arg: JSONArg): AnyExpression {
-  return expression`JSON_TO_RECORDSET(${sv([...arguments])})`
+  return expression`JSON_TO_RECORDSET(${sql.join([...arguments])})`
 }
 
 /**
@@ -475,7 +475,7 @@ export function JSON_TO_RECORDSET (arg: JSONArg): AnyExpression {
  *  2 |
  */
 export function JSONB_TO_RECORDSET (arg: JSONBArg): AnyExpression {
-  return expression`JSONB_TO_RECORDSET(${sv([...arguments])})`
+  return expression`JSONB_TO_RECORDSET(${sql.join([...arguments])})`
 }
 
 /**
@@ -499,7 +499,7 @@ export function JSONB_SET (
   newValue: JSONBArg,
   createIfMissing?: BooleanArg
 ): Expression<JSONBType> {
-  return expression`JSONB_SET(${sv([...arguments])})`
+  return expression`JSONB_SET(${sql.join([...arguments])})`
 }
 
 /**
@@ -516,7 +516,7 @@ export function JSONB_SET_LAX (
   newValue: JSONBArg | null,
   createifMissing?: BooleanArg,
   nullValueTreatment?: CharacterArg): Expression<JSONBType> {
-  return expression`JSONB_SET_LAX(${sv([...arguments])})`
+  return expression`JSONB_SET_LAX(${sql.join([...arguments])})`
 }
 
 /**
@@ -542,7 +542,7 @@ export function JSONB_INSERT (
   newValue: JSONBArg,
   insertAfter?: BooleanArg
 ): Expression<JSONBType> {
-  return expression`JSONB_INSERT(${sv([...arguments])})`
+  return expression`JSONB_INSERT(${sql.join([...arguments])})`
 }
 
 /**
@@ -552,7 +552,7 @@ export function JSONB_INSERT (
  * @example json_strip_nulls('[{"f1":1, "f2":null}, 2, null, 3]') → [{"f1":1},2,null,3]
  */
 export function JSON_STRIP_NULLS (arg: JSONArg): Expression<JSONType> {
-  return expression`JSON_STRIP_NULLS(${sv([...arguments])})`
+  return expression`JSON_STRIP_NULLS(${sql.join([...arguments])})`
 }
 
 /**
@@ -562,7 +562,7 @@ export function JSON_STRIP_NULLS (arg: JSONArg): Expression<JSONType> {
  * @example json_strip_nulls('[{"f1":1, "f2":null}, 2, null, 3]') → [{"f1":1},2,null,3]
  */
 export function JSONB_STRIP_NULLS (arg: JSONBArg): Expression<JSONBType> {
-  return expression`JSONB_STRIP_NULLS(${sv([...arguments])})`
+  return expression`JSONB_STRIP_NULLS(${sql.join([...arguments])})`
 }
 
 /**
@@ -580,7 +580,7 @@ export function JSONB_PATH_EXISTS (
   vars?: JSONBArg,
   silent?: BooleanArg
 ): Expression<BooleanType> {
-  return expression`JSONB_PATH_EXISTS(${sv([...arguments])})`
+  return expression`JSONB_PATH_EXISTS(${sql.join([...arguments])})`
 }
 
 /**
@@ -592,7 +592,7 @@ export function JSONB_PATH_EXISTS (
  * @example jsonb_path_match('{"a":[1,2,3,4,5]}', 'exists($.a[*] ? (@ >= $min && @ <= $max))', '{"min":2, "max":4}') → t
  */
 export function JSONB_PATH_MATCH (target: JSONBArg, path: CharacterArg, vars?: JSONBArg, silent?: BooleanArg): Expression<BooleanType> {
-  return expression`JSONB_PATH_MATCH(${sv([...arguments])})`
+  return expression`JSONB_PATH_MATCH(${sql.join([...arguments])})`
 }
 
 /**
@@ -608,7 +608,7 @@ export function JSONB_PATH_MATCH (target: JSONBArg, path: CharacterArg, vars?: J
  *  4
  */
 export function JSONB_PATH_QUERY (target: JSONBArg, path: CharacterArg, vars?: JSONBArg, silent?: BooleanArg): Expression<JSONBType> {
-  return expression`JSONB_PATH_QUERY(${sv([...arguments])})`
+  return expression`JSONB_PATH_QUERY(${sql.join([...arguments])})`
 }
 
 /**
@@ -619,7 +619,7 @@ export function JSONB_PATH_QUERY (target: JSONBArg, path: CharacterArg, vars?: J
  * @example jsonb_path_query_array('{"a":[1,2,3,4,5]}', '$.a[*] ? (@ >= $min && @ <= $max)', '{"min":2, "max":4}') → [2, 3, 4]
  */
 export function JSONB_PATH_QUERY_ARRAY (target: JSONBArg, path: CharacterArg, vars?: JSONBArg, silent?: BooleanArg): Expression<JSONBType> {
-  return expression`JSONB_PATH_QUERY_ARRAY(${sv([...arguments])})`
+  return expression`JSONB_PATH_QUERY_ARRAY(${sql.join([...arguments])})`
 }
 
 /**
@@ -630,7 +630,7 @@ export function JSONB_PATH_QUERY_ARRAY (target: JSONBArg, path: CharacterArg, va
  * @example jsonb_path_query_first('{"a":[1,2,3,4,5]}', '$.a[*] ? (@ >= $min && @ <= $max)', '{"min":2, "max":4}') → 2
  */
 export function JSONB_PATH_QUERY_FIRST (target: JSONBArg, path: CharacterArg, vars?: JSONBArg, silent?: BooleanArg): Expression<JSONBType> {
-  return expression`JSONB_PATH_QUERY_FIRST(${sv([...arguments])})`
+  return expression`JSONB_PATH_QUERY_FIRST(${sql.join([...arguments])})`
 }
 
 /**
@@ -646,7 +646,7 @@ export function JSONB_PATH_QUERY_FIRST (target: JSONBArg, path: CharacterArg, va
  * @example jsonb_path_exists_tz('["2015-08-01 12:00:00 -05"]', '$[*] ? (@.datetime() < "2015-08-02".datetime())') → t
  */
 export function JSONB_PATH_EXISTS_TZ (target: JSONBArg, path: CharacterArg, vars?: JSONBArg, silent?: BooleanArg): Expression<BooleanType> {
-  return expression`JSONB_PATH_EXISTS_TZ(${sv([...arguments])})`
+  return expression`JSONB_PATH_EXISTS_TZ(${sql.join([...arguments])})`
 }
 
 /**
@@ -662,7 +662,7 @@ export function JSONB_PATH_EXISTS_TZ (target: JSONBArg, path: CharacterArg, vars
  * @example jsonb_path_exists_tz('["2015-08-01 12:00:00 -05"]', '$[*] ? (@.datetime() < "2015-08-02".datetime())') → t
  */
 export function JSONB_PATH_MATCH_TZ (target: JSONBArg, path: CharacterArg, vars?: JSONBArg, silent?: BooleanArg): Expression<BooleanType> {
-  return expression`JSONB_PATH_MATCH_TZ(${sv([...arguments])})`
+  return expression`JSONB_PATH_MATCH_TZ(${sql.join([...arguments])})`
 }
 
 /**
@@ -678,7 +678,7 @@ export function JSONB_PATH_MATCH_TZ (target: JSONBArg, path: CharacterArg, vars?
  * @example jsonb_path_exists_tz('["2015-08-01 12:00:00 -05"]', '$[*] ? (@.datetime() < "2015-08-02".datetime())') → t
  */
 export function JSONB_PATH_QUERY_TZ (target: JSONBArg, path: CharacterArg, vars?: JSONBArg, silent?: BooleanArg): Expression<JSONBType> {
-  return expression`JSONB_PATH_QUERY_TZ(${sv([...arguments])})`
+  return expression`JSONB_PATH_QUERY_TZ(${sql.join([...arguments])})`
 }
 
 /**
@@ -694,7 +694,7 @@ export function JSONB_PATH_QUERY_TZ (target: JSONBArg, path: CharacterArg, vars?
  * @example jsonb_path_exists_tz('["2015-08-01 12:00:00 -05"]', '$[*] ? (@.datetime() < "2015-08-02".datetime())') → t
  */
 export function JSONB_PATH_QUERY_ARRAY_TZ (target: JSONBArg, path: CharacterArg, vars?: JSONBArg, silent?: BooleanArg): Expression<JSONBType> {
-  return expression`JSONB_PATH_QUERY_ARRAY_TZ(${sv([...arguments])})`
+  return expression`JSONB_PATH_QUERY_ARRAY_TZ(${sql.join([...arguments])})`
 }
 
 /**
@@ -710,7 +710,7 @@ export function JSONB_PATH_QUERY_ARRAY_TZ (target: JSONBArg, path: CharacterArg,
  * @example jsonb_path_exists_tz('["2015-08-01 12:00:00 -05"]', '$[*] ? (@.datetime() < "2015-08-02".datetime())') → t
  */
 export function JSONB_PATH_QUERY_FIRST_TZ (target: JSONBArg, path: CharacterArg, vars?: JSONBArg, silent?: BooleanArg): Expression<JSONBType> {
-  return expression`JSONB_PATH_QUERY_FIRST_TZ(${sv([...arguments])})`
+  return expression`JSONB_PATH_QUERY_FIRST_TZ(${sql.join([...arguments])})`
 }
 
 /**
@@ -726,7 +726,7 @@ export function JSONB_PATH_QUERY_FIRST_TZ (target: JSONBArg, path: CharacterArg,
  * ]
  */
 export function JSONB_PRETTY (arg: JSONBArg): Expression<TextType> {
-  return expression`JSONB_PRETTY(${sv([...arguments])})`
+  return expression`JSONB_PRETTY(${sql.join([...arguments])})`
 }
 
 /**
@@ -739,7 +739,7 @@ export function JSONB_PRETTY (arg: JSONBArg): Expression<TextType> {
  * json_typeof(NULL::json) IS NULL → t
  */
 export function JSON_TYPEOF (arg: JSONArg): Expression<TextType> {
-  return expression`JSON_TYPEOF(${sv([...arguments])})`
+  return expression`JSON_TYPEOF(${sql.join([...arguments])})`
 }
 
 /**
@@ -752,5 +752,5 @@ export function JSON_TYPEOF (arg: JSONArg): Expression<TextType> {
  * json_typeof(NULL::json) IS NULL → t
  */
 export function JSONB_TYPEOF (arg: JSONBArg): Expression<TextType> {
-  return expression`JSONB_TYPEOF(${sv([...arguments])})`
+  return expression`JSONB_TYPEOF(${sql.join([...arguments])})`
 }

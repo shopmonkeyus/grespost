@@ -71,15 +71,13 @@ export const reserved = ['A', 'ABORT', 'ABS', 'ABSOLUTE', 'ACCESS', 'ACTION', 'A
   'VAR_SAMP', 'VERBOSE', 'VIEW', 'VOLATILE', 'WHEN', 'WHENEVER', 'WHERE', 'WIDTH_BUCKET', 'WINDOW', 'WITH',
   'WITHIN', 'WITHOUT', 'WORK', 'WRITE', 'YEAR', 'ZONE']
 
-export const isReserved = (value: string) => reserved.some(el => el === value.toUpperCase())
-
 export function eident (value: string): string {
   if (typeof value !== 'string') throw new Error('Identifier must be a string')
 
   const ident = value.toString().slice(0) // create copy
 
   // do not quote a valid, unquoted identifier
-  if (/^[a-z_][a-z0-9_$]*$/.test(ident) && !isReserved(ident)) return ident
+  if (/^[a-z_][a-z0-9_$]*$/.test(ident) && !reserved.some(el => el === ident.toUpperCase())) return ident
 
   let quoted = '"'
 

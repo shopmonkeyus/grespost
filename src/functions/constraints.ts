@@ -1,4 +1,4 @@
-import { condition, Condition, expression, Expression, identifier, keyword, Source, sql, sv, Table, Template } from '..'
+import { condition, Condition, expression, Expression, sql, Table, Template } from '..'
 
 export interface ConstraintConfig {
   name?: string
@@ -7,9 +7,9 @@ export interface ConstraintConfig {
 }
 
 export const CONSTRAINT = (template: Template, conf?: ConstraintConfig) => {
-  const NAME = conf?.name ? sql`CONSTRAINT ${identifier(conf.name)} ` : sql``
+  const NAME = conf?.name ? sql`CONSTRAINT ${sql.ident(conf.name)} ` : sql``
   const DEFERRABLE = typeof conf?.deferrable === 'boolean' ? conf?.deferrable ? sql` DEFERRABLE` : sql` NOT DEFERRABLE` : sql``
-  const INITIALLY = conf?.initially ? sql` INITIALLY ${keyword(conf.initially, ['DEFERRED', 'IMMEDIATE'])}` : sql``
+  const INITIALLY = conf?.initially ? sql` INITIALLY ${sql.keyword(conf.initially, ['DEFERRED', 'IMMEDIATE'])}` : sql``
 
   return sql`${NAME}${template}${DEFERRABLE}${INITIALLY} `
 }
@@ -32,7 +32,7 @@ export const DEFAULT = (value: any, conf?: ConstraintConfig) => {
 
 export const GENERATED_AS = (type: 'ALWAYS' | 'BY DEFAULT', conf?: ConstraintConfig & { expression?: Expression, identity?: any }) => {
   const AS = conf?.expression ? sql`( ${expression} ) STORED` : sql`IDENTITY${conf?.identity ? sql` ( ${conf.identity} )` : sql``}`
-  return CONSTRAINT(sql`GENERATED ${keyword(type, ['ALWAYS', 'BY DEFAULT'])} AS ${AS}`, conf)
+  return CONSTRAINT(sql`GENERATED ${sql.keyword(type, ['ALWAYS', 'BY DEFAULT'])} AS ${AS}`, conf)
 }
 
 export interface IndexParametersConfig {
@@ -45,10 +45,10 @@ export interface IndexParametersConfig {
 const stringifyIndexParameters = (params?: IndexParametersConfig) => {
   if (!params) return sql``
 
-  const COLUMNS = params.columns ? sql` ( ${sv(params.columns.map(el => identifier(el)))} )` : sql``
-  const INCLUDE = params.include ? sql` INCLUDE ( ${sv(params.include.map(el => identifier(el)))} )` : sql``
-  const WITH = params.with ? sql` WITH ( ${sv(Object.entries(params.with).map(([key, value]) => sql`${keyword(key)}${value || sql``}`))} )` : sql``
-  const USING = params.using ? sql` USING INDEX TABLESPACE ${identifier(params.using)}` : sql``
+  const COLUMNS = params.columns ? sql` ( ${sql.join(params.columns.map(el => sql.ident(el)))} )` : sql``
+  const INCLUDE = params.include ? sql` INCLUDE ( ${sql.join(params.include.map(el => sql.ident(el)))} )` : sql``
+  const WITH = params.with ? sql` WITH ( ${sql.join(Object.entries(params.with).map(([key, value]) => sql`${sql.keyword(key)}${value || sql``}`))} )` : sql``
+  const USING = params.using ? sql` USING INDEX TABLESPACE ${sql.ident(params.using)}` : sql``
 
   return sql`${COLUMNS}${INCLUDE}${WITH}${USING}`
 }
@@ -71,24 +71,24 @@ export interface ReferenceConfig<T> {
 }
 
 export const REFERENCES = (table: string | Table, conf?: ReferenceConfig<string | Expression> & ConstraintConfig) => {
-  const TABLE = typeof table === 'string' ? identifier(table) : identifier(...table.$.name)
-  const COLUMN = conf?.columns ? sql` ( ${typeof conf.columns === 'string' ? identifier(conf.columns) : conf.columns} )` : sql``
-  const MATCH = conf?.match ? sql` MATCH ${keyword(conf.match, ['PARTIAL', 'SIMPLE', 'FULL'])}` : sql``
+  const TABLE = typeof table === 'string' ? sql.ident(table) : sql.ident(...table.$.name)
+  const COLUMN = conf?.columns ? sql` ( ${typeof conf.columns === 'string' ? sql.ident(conf.columns) : conf.columns} )` : sql``
+  const MATCH = conf?.match ? sql` MATCH ${sql.keyword(conf.match, ['PARTIAL', 'SIMPLE', 'FULL'])}` : sql``
   const referentialActions = ['NO ACTION', 'RESTRICT', 'CASCADE', 'SET NULL', 'SET DEFAULT']
-  const ON_DELETE = conf?.onDelete ? sql` ON DELETE ${keyword(conf.onDelete, referentialActions)}` : sql``
-  const ON_UPDATE = conf?.onUpdate ? sql` ON UPDATE ${keyword(conf.onUpdate, referentialActions)}` : sql``
+  const ON_DELETE = conf?.onDelete ? sql` ON DELETE ${sql.keyword(conf.onDelete, referentialActions)}` : sql``
+  const ON_UPDATE = conf?.onUpdate ? sql` ON UPDATE ${sql.keyword(conf.onUpdate, referentialActions)}` : sql``
 
   return CONSTRAINT(sql`REFERENCES ${TABLE}${COLUMN}${MATCH}${ON_DELETE}${ON_UPDATE}`, conf)
 }
 
 export const FOREIGN_KEY = (columns: (string | Expression)[], table: string | Table, conf?: ReferenceConfig<(string | Expression)[]> & ConstraintConfig) => {
-  const COLUMNS = columns ? sql`( ${sv(columns.map(el => typeof el === 'string' ? identifier(el) : el))} )` : sql``
-  const TABLE = typeof table === 'string' ? identifier(table) : identifier(...table.$.name)
-  const REF_COLUMNS = conf?.columns ? sql` ( ${sv(conf.columns.map(el => typeof el === 'string' ? identifier(el) : el))} )` : sql``
-  const MATCH = conf?.match ? sql` MATCH ${keyword(conf.match, ['PARTIAL', 'SIMPLE', 'FULL'])}` : sql``
+  const COLUMNS = columns ? sql`( ${sql.join(columns.map(el => typeof el === 'string' ? sql.ident(el) : el))} )` : sql``
+  const TABLE = typeof table === 'string' ? sql.ident(table) : sql.ident(...table.$.name)
+  const REF_COLUMNS = conf?.columns ? sql` ( ${sql.join(conf.columns.map(el => typeof el === 'string' ? sql.ident(el) : el))} )` : sql``
+  const MATCH = conf?.match ? sql` MATCH ${sql.keyword(conf.match, ['PARTIAL', 'SIMPLE', 'FULL'])}` : sql``
   const referentialActions = ['NO ACTION', 'RESTRICT', 'CASCADE', 'SET NULL', 'SET DEFAULT']
-  const ON_DELETE = conf?.onDelete ? sql` ON DELETE ${keyword(conf.onDelete, referentialActions)}` : sql``
-  const ON_UPDATE = conf?.onUpdate ? sql` ON UPDATE ${keyword(conf.onUpdate, referentialActions)}` : sql``
+  const ON_DELETE = conf?.onDelete ? sql` ON DELETE ${sql.keyword(conf.onDelete, referentialActions)}` : sql``
+  const ON_UPDATE = conf?.onUpdate ? sql` ON UPDATE ${sql.keyword(conf.onUpdate, referentialActions)}` : sql``
 
   return CONSTRAINT(sql`FOREIGN KEY ${COLUMNS} REFERENCES ${TABLE}${REF_COLUMNS}${MATCH}${ON_DELETE}${ON_UPDATE}`, conf)
 }
@@ -98,12 +98,12 @@ type LikeOptions = 'COMMENTS' | 'CONSTRAINTS' | 'DEFAULTS' | 'GENERATED' | 'IDEN
 export const LIKE = (table: string, options: { including?: LikeOptions[], excluding?: LikeOptions[] }) => {
   const likeOptions = ['COMMENTS', 'CONSTRAINTS', 'DEFAULTS', 'GENERATED', 'IDENTITY', 'INDEXES', 'STATISTICS', 'STORAGE', 'ALL']
   const INCLUDING = options.including && options.including.length
-    ? sql` ${sv(options.including.map(el => sql`INCLUDING ${keyword(el, likeOptions)}`), ' ')}`
+    ? sql` ${sql.join(options.including.map(el => sql`INCLUDING ${sql.keyword(el, likeOptions)}`), ' ')}`
     : sql``
   const EXCLUDING = options.excluding && options.excluding.length
-    ? sql` ${sv(options.excluding.map(el => sql`EXCLUDING ${keyword(el, likeOptions)}`), ' ')}`
+    ? sql` ${sql.join(options.excluding.map(el => sql`EXCLUDING ${sql.keyword(el, likeOptions)}`), ' ')}`
     : sql``
-  const TABLE = identifier(table)
+  const TABLE = sql.ident(table)
 
   return sql`LIKE ${TABLE}${INCLUDING}${EXCLUDING}`
 }

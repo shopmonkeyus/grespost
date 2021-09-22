@@ -1,9 +1,7 @@
 import { Source } from '.'
 import { Expression, expression } from '../expressions'
-import { sql, sv, Template } from '../template'
+import { sql, Template } from '../template'
 import { eident } from '../template/eident'
-import { identifier } from '../template/identifier'
-import { keyword } from '../template/keyword'
 import { Type } from '../types'
 
 export type Table<T extends Record<string, Type> = any> = TableSource<T> & { [K in keyof T]: T[K]['expression'] }
@@ -26,7 +24,7 @@ export class TableSource<T extends Record<string, Type> = Record<string, Type>> 
     Object.entries(types).forEach(([key, type]) => {
       Object.defineProperty(this, key, {
         enumerable: true,
-        get: () => expression`${ident.$}.${identifier(key)}`
+        get: () => expression`${ident.$}.${sql.ident(key)}`
       })
     })
 
@@ -54,9 +52,9 @@ export class TableIdentifier<T extends Record<string, Type> = Record<string, Typ
   }
 
   toSource () {
-    const columns = this.columns && this.columns.length ? sql` ( ${sv(this.columns.map(el => identifier(el)))} )` : sql``
-    const AS_ALIAS = this.alias ? sql` AS ${identifier(this.alias)}${columns}` : sql``
-    return sql`${identifier(...this.name)}${AS_ALIAS}`
+    const columns = this.columns && this.columns.length ? sql` ( ${sql.join(this.columns.map(el => sql.ident(el)))} )` : sql``
+    const AS_ALIAS = this.alias ? sql` AS ${sql.ident(this.alias)}${columns}` : sql``
+    return sql`${sql.ident(...this.name)}${AS_ALIAS}`
   }
 
   as (alias: string, columns?: string[]): Table<T> {
@@ -74,6 +72,6 @@ export class TableIdentifier<T extends Record<string, Type> = Record<string, Typ
   }
 
   all (): { [K in keyof T]: Expression<T[K]> } {
-    return expression`${this}.${keyword('*')}`
+    return expression`${this}.${sql.keyword('*')}`
   }
 }

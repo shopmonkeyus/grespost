@@ -1,8 +1,7 @@
 import { BooleanType, Type } from '../types'
-import { keyword, sql, sv, Template } from '../template'
+import { sql, Template } from '../template'
 import { Expression, expression } from '.'
 import { eident } from '../template/eident'
-import { identifier } from '../template/identifier'
 import { Query } from '..'
 
 export class AnyExpression<T extends Type = Type> extends Template {
@@ -22,8 +21,8 @@ export class AnyExpression<T extends Type = Type> extends Template {
   }
 
   toSource (): Template {
-    const columns = this.columns && this.columns.length ? sql` ( ${sv(this.columns.map(el => identifier(el)))} )` : sql``
-    const AS_ALIAS = this.alias ? sql` AS ${identifier(this.alias)}${columns}` : sql``
+    const columns = this.columns && this.columns.length ? sql` ( ${sql.join(this.columns.map(el => sql.ident(el)))} )` : sql``
+    const AS_ALIAS = this.alias ? sql` AS ${sql.ident(this.alias)}${columns}` : sql``
     return expression`${new Template(this.strings, this.literals)}${AS_ALIAS}`
   }
 
@@ -49,14 +48,14 @@ export class AnyExpression<T extends Type = Type> extends Template {
    * BooleanExpr: IS
    */
   is (operand: null | boolean | 'UNKNOWN'): Expression<BooleanType<T['nullable']>> {
-    return expression`${this} IS ${operand === 'UNKNOWN' ? keyword('UNKNOWN') : operand}`
+    return expression`${this} IS ${operand === 'UNKNOWN' ? sql.keyword('UNKNOWN') : operand}`
   }
 
   /**
    * BooleanExpr: IS NOT
    */
   isNot (operand: null | boolean | 'UNKNOWN'): Expression<BooleanType<T['nullable']>> {
-    return expression`${this} IS NOT ${operand === 'UNKNOWN' ? keyword('UNKNOWN') : operand}`
+    return expression`${this} IS NOT ${operand === 'UNKNOWN' ? sql.keyword('UNKNOWN') : operand}`
   }
 
   /**
@@ -142,7 +141,7 @@ export class AnyExpression<T extends Type = Type> extends Template {
   in (subquery: Query): Expression<BooleanType<T['nullable']>>
   in (...operands: T['argument'][]): Expression<BooleanType<T['nullable']>>
   in (subquery: Query | T['argument'], ...operands: T['argument'][]): Expression<BooleanType<T['nullable']>> {
-    return expression`${this} IN (${sv(typeof subquery === 'object' && '$' in subquery ? [subquery.$] : [subquery, ...operands])})`
+    return expression`${this} IN (${sql.join(typeof subquery === 'object' && '$' in subquery ? [subquery.$] : [subquery, ...operands])})`
   }
 
   /**
@@ -151,7 +150,7 @@ export class AnyExpression<T extends Type = Type> extends Template {
   notIn (subquery: Query): Expression<BooleanType<T['nullable']>>
   notIn (...operands: T['argument'][]): Expression<BooleanType<T['nullable']>>
   notIn (subquery: Query | T['argument'], ...operands: T['argument'][]): Expression<BooleanType<T['nullable']>> {
-    return expression`${this} NOT IN (${sv(typeof subquery === 'object' && '$' in subquery ? [subquery.$] : [subquery, ...operands])})`
+    return expression`${this} NOT IN (${sql.join(typeof subquery === 'object' && '$' in subquery ? [subquery.$] : [subquery, ...operands])})`
   }
 
   contain (arg: T['argument']): Expression<BooleanType<T['nullable']>> {

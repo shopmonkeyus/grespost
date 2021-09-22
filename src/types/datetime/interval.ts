@@ -1,14 +1,14 @@
 import { CharacterArg, DoubleArg, TextType } from '..'
 import { AnyExpression, Expression } from '../../expressions'
 import { ConstraintConfig } from '../../functions'
-import { sv } from '../../template'
+import { sql } from '../../template'
 import { Type, type } from '../index'
 import { DateType } from './date'
 import { TimeTypes } from './time'
 import { TimestampTypes } from './timestamp'
 
 export function INTERVAL (fields?: string, precission?: number) {
-  return type`INTERVAL${sv([fields, precission].filter(Boolean), ', ', '()')}` as IntervalType<true>
+  return type`INTERVAL${sql.join([fields, precission].filter(Boolean), ', ', '()')}` as IntervalType<true>
 }
 
 export interface PostgresInterval {

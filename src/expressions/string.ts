@@ -1,6 +1,5 @@
 import { Constructor, Expression, expression } from '.'
 import { sql } from '../template'
-import { keyword } from '../template/keyword'
 import { BooleanType, CharacterArg } from '../types'
 import { AnyExpression } from './any'
 
@@ -21,7 +20,7 @@ export function StringOps <T extends Constructor> (Base: T) {
      * normalizing possibly already normalized strings.
      */
     isNormalized (form?: 'NFC' | 'NFD' | 'NFKC' | 'NFKD'): Expression<BooleanType> {
-      return expression`${this} IS${form ? sql` ${keyword(form, ['NFC', 'NFD', 'NFKC', 'NFKD'])}` : sql``} NORMALIZED`
+      return expression`${this} IS${form ? sql` ${sql.keyword(form, ['NFC', 'NFD', 'NFKC', 'NFKD'])}` : sql``} NORMALIZED`
     }
 
     /**
@@ -32,7 +31,7 @@ export function StringOps <T extends Constructor> (Base: T) {
      * normalizing possibly already normalized strings.
      */
     isNotNormalized (form?: 'NFC' | 'NFD' | 'NFKC' | 'NFKD'): Expression<BooleanType> {
-      return expression`${this} IS NOT${form ? sql` ${keyword(form, ['NFC', 'NFD', 'NFKC', 'NFKD'])}` : sql``} NORMALIZED`
+      return expression`${this} IS NOT${form ? sql` ${sql.keyword(form, ['NFC', 'NFD', 'NFKC', 'NFKD'])}` : sql``} NORMALIZED`
     }
 
     /**
@@ -73,7 +72,7 @@ export function StringOps <T extends Constructor> (Base: T) {
      * Case insensitively operator: ~*
      */
     matchRegex (pattern: CharacterArg, caseSensitively: boolean = true): Expression<BooleanType> {
-      const operator = caseSensitively ? keyword('~') : keyword('~*')
+      const operator = caseSensitively ? sql.keyword('~') : sql.keyword('~*')
       return expression`${this} ${operator} ${pattern}`
     }
 
@@ -83,7 +82,7 @@ export function StringOps <T extends Constructor> (Base: T) {
      * Case insensitively operator: !~*
      */
     notMatchRegex (pattern: CharacterArg, caseSensitively: boolean = true): Expression<BooleanType> {
-      const operator = caseSensitively ? keyword('!~') : keyword('!~*')
+      const operator = caseSensitively ? sql.keyword('!~') : sql.keyword('!~*')
       return expression`${this} ${operator} ${pattern}`
     }
   }

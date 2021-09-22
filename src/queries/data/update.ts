@@ -1,7 +1,7 @@
 import { AnyExpression, condition, Condition } from '../../expressions'
 import { FromConfig, stringifyFrom, stringifyTable } from '../common/from'
 import { FieldsConfig, stringifyFields } from '../common/fields'
-import { identifier, sql, sv, Template } from '../../template'
+import { sql, Template } from '../../template'
 import { stringifyWith, WithConfig } from '../common/with'
 import { QueryDefinition, Source } from '../../source'
 import { MapToExpression } from '..'
@@ -40,13 +40,13 @@ export const stringifyUpdate = (config: UpdateConfig): Template => {
   const SET = sql`SET ${stringifySet(config.set)}`
   const FROM = config.from ? sql` FROM ${stringifyFrom(config.from)}` : sql``
   const WHERE = config.where ? sql` WHERE ${condition(config.where)}` : sql``
-  const CURSOR = config.whereCurrentOf ? sql` WHERE CURRENT OF ${identifier(config.whereCurrentOf)}` : sql``
+  const CURSOR = config.whereCurrentOf ? sql` WHERE CURRENT OF ${sql.ident(config.whereCurrentOf)}` : sql``
   const RETURNING = config.returning ? config.returning === '*' ? sql` RETURNING *` : sql` RETURNING ${stringifyFields(config.returning)}` : sql``
 
   return sql`${WITH}UPDATE ${TABLE} ${SET}${FROM}${WHERE}${CURSOR}${RETURNING}`
 }
 
 export const stringifySet = (config: AnyExpression[] | Record<string, any>) => {
-  if (Array.isArray(config)) return sv(config)
-  return sv(Object.entries(config).map(([key, value]) => sql`${identifier(key)} = ${value}`))
+  if (Array.isArray(config)) return sql.join(config)
+  return sql.join(Object.entries(config).map(([key, value]) => sql`${sql.ident(key)} = ${value}`))
 }
