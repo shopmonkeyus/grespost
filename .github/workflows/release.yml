@@ -98,8 +98,9 @@ jobs:
 
       - name: Semantic Release
         id: release
-        uses: sujimoshi/semantic-release-action@v1.4.1
+        uses: sujimoshi/semantic-release-action@v1.5.2
         with:
+          noFailOnNothingToRelease: true
           branches: |
             master
             next
