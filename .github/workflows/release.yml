@@ -67,19 +67,54 @@ jobs:
       - name: Run build
         run: npm run build
 
-  release:
-    name: Publish
+  version:
+    name: Version
     needs: [test, lint, build]
     runs-on: ubuntu-latest
-    if: |
-      github.ref == 'refs/heads/master' ||
-      github.ref == 'refs/heads/next' ||
-      github.ref == 'refs/heads/next-major' ||
-      github.ref == 'refs/heads/alpha' ||
-      github.ref == 'refs/heads/beta' ||
-      contains(github.ref, '/feat/') ||
-      contains(github.ref, '/hotfeat/') ||
-      contains(github.ref, '/fix/')
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+      name: ${{ steps.release.outputs.name }}
+      notes: ${{ steps.release.outputs.notes }}
+      channel: ${{ steps.release.outputs.channel }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Semantic Release
+        id: release
+        uses: sujimoshi/semantic-release-action@v1.5.2
+        with:
+          noFailOnNothingToRelease: true
+          branches: |
+            master
+            next
+            next-major
+            { "name": "alpha", "prerelease": true }
+            { "name": "beta", "prerelease": true }
+            { "name": "*/[A-Z]+-[0-9]+/*", "prerelease": "<%= name.split('/')[1] %>", "channel": "<%= name.split('/')[1] %>" }
+
+  release:
+    name: Release
+    needs: [version]
+    if: needs.version.outputs.version !== ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish Github Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.version.outputs.tag }}
+          name: ${{ needs.version.outputs.name }}
+          body: ${{ needs.version.outputs.notes }}
+          draft: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: ${{ !!needs.version.outputs.channel }}
+
+  publish:
+    name: Publish
+    needs: [version]
+    if: needs.version.outputs.version !== ''
+    runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -96,32 +131,9 @@ jobs:
       - name: Build files
         run: npm run build
 
-      - name: Semantic Release
-        id: release
-        uses: sujimoshi/semantic-release-action@v1.5.2
-        with:
-          noFailOnNothingToRelease: true
-          branches: |
-            master
-            next
-            next-major
-            { "name": "alpha", "prerelease": true }
-            { "name": "beta", "prerelease": true }
-            { "name": "*/[A-Z]+-[0-9]+/*", "prerelease": "<%= name.split('/')[1] %>", "channel": "<%= name.split('/')[1] %>" }
-
-      - name: Publish Github Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.release.outputs.tag }}
-          name: ${{ steps.release.outputs.name }}
-          body: ${{ steps.release.outputs.notes }}
-          draft: false
-          token: ${{ secrets.GITHUB_TOKEN }}
-          prerelease: ${{ !!steps.release.outputs.channel }}
-
       - name: Publish NPM Package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.SHOPMONKEY_NPM_TOKEN }}
         run: |
-          npm --no-git-tag-version version '${{ steps.release.outputs.version }}'
-          npm publish --tag '${{ steps.release.outputs.channel || 'latest' }}'
+          npm --no-git-tag-version version '${{ needs.version.outputs.version }}'
+          npm publish --tag '${{ needs.version.outputs.channel || 'latest' }}'
