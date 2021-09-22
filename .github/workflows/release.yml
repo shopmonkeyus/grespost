@@ -19,7 +19,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    container: node:10.18-jessie
+    container: node:14-jessie
     services:
       postgres:
         image: postgres
