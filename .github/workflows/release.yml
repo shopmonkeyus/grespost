@@ -104,5 +104,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.SHOPMONKEY_NPM_TOKEN }}
         run: |
-          npm --no-git-tag-version version ${{ steps.release.outputs.version }}
+          echo "Channel: ${{ steps.release.outputs.channel }}"
+          echo "Version: ${{ steps.release.outputs.version }}"
+          npm --no-git-tag-version version '${{ steps.release.outputs.version }}'
           npm publish --tag '${{ steps.release.outputs.channel }}'
