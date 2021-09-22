@@ -97,7 +97,7 @@ jobs:
   release:
     name: Release
     needs: [version]
-    if: needs.version.outputs.version !== ''
+    if: needs.version.outputs.version != ''
     runs-on: ubuntu-latest
     steps:
       - name: Publish Github Release
@@ -113,7 +113,7 @@ jobs:
   publish:
     name: Publish
     needs: [version]
-    if: needs.version.outputs.version !== ''
+    if: needs.version.outputs.version != ''
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
