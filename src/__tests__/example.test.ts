@@ -1,4 +1,4 @@
-import { ADD_TABLE_CONSTRAINT, ALTER_TABLE, AnyExpression, CREATE_TABLE, DROP_TABLE, FOREIGN_KEY, GEN_RANDOM_UUID, INSERT, JSON_AGG, JSON_BUILD_OBJECT, QueryDefinition, SELECT, source, TEXT, UPDATE, UUID, VALUES } from '../dist'
+import { ADD_TABLE_CONSTRAINT, ALTER_TABLE, AnyExpression, CREATE_TABLE, DROP_TABLE, FOREIGN_KEY, GEN_RANDOM_UUID, INSERT, JSON_AGG, JSON_BUILD_OBJECT, QueryDefinition, SELECT, source, TEXT, UPDATE, UUID, VALUES } from '../'
 import events from 'events'
 import { Pool, QueryResult } from 'pg'
 
@@ -9,11 +9,6 @@ declare module 'pg' {
     ): Promise<QueryResult<{
       [K in keyof T]: T[K]['type']['primitive']
     }>>
-  }
-}
-
-declare module '../dist' {
-  interface OverrideOutputMapping<T = any> {
   }
 }
 
