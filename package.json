@@ -1,9 +1,25 @@
 {
   "name": "grespost",
+  "description": "",
   "version": "0.0.0-auto",
   "main": "dist/index.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint 'src/**/*.ts'",
+    "build": "tsc -p tsconfig.build.json",
+    "prepare": "husky install"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
   "dependencies": {},
   "devDependencies": {
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
     "@types/jest": "^27.0.1",
     "@types/node": "^14.17.2",
     "@types/pg": "^8.6.1",
@@ -15,6 +31,7 @@
     "eslint-plugin-jest": "^24.4.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
+    "husky": "^7.0.2",
     "jest": "^27.1.1",
     "pg": "^8.7.1",
     "ts-jest": "^27.0.5",
@@ -23,13 +40,5 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shopmonkeyus/grespost.git"
-  },
-  "scripts": {
-    "test": "jest",
-    "lint": "eslint 'src/**/*.ts'",
-    "build": "tsc -p tsconfig.build.json"
-  },
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  }
 }
