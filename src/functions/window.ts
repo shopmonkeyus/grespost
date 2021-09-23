@@ -1,6 +1,6 @@
 import { stringifyOrderBy } from '..'
 import { AnyExpression, condition, Condition, Expression, expression, ToType } from '../expressions'
-import {  sql, Template } from '../template'
+import { sql, Template } from '../template'
 import { BigintType, DoubleType, IntegerArg, IntegerType } from '../types'
 
 export interface WindowBoundConfig {
