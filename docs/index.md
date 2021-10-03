@@ -78,7 +78,7 @@ function ARRAY(of: Type): ArrayType<Type>
 function JSON<T>(): JSONType<T>
 function JSONB<T>(): JSONBType<T>
 ```
-Все перечислинные типы данных имеют набор методов для описания констрейнтов:
+Все перечислинные типы данных имеют набор методов для описания констрейнтов колонок, необходимых при создании таблицы:
 ```ts
 interface Type {
   required (conf?: ConstraintConfig): Type
@@ -117,7 +117,7 @@ export const PermissionsTable = source('permissions', {
 })
 ```
 
-Как видите при обьявлении схемм мы воспользовались стандартной функцией postgres `GEN_RANDOM_UUID()`, данная библиотека имеет огромное количество маппингов на стандартные функции postgres, полный их перечень можно увидеть здесь.
+Как видите при обьявлении схемм мы воспользовались стандартной функцией postgres `GEN_RANDOM_UUID()`, данная библиотека имеет огромное количество маппингов на стандартные функции postgres, полный их перечень можно увидеть [здесь](https://github.com/shopmonkeyus/grespost/tree/master/src/functions).
 
 ### Table creation
 Создание таблицы в `grespost` производится с использованием функции `CREATE_TABLE` которая имеет следующую сигнатуру:
