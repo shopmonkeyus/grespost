@@ -1,37 +1,48 @@
-## Welcome to GitHub Pages
+## Grespost
 
-You can use the [editor on GitHub](https://github.com/shopmonkeyus/grespost/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Эта библиотека была вдохновлена идеей написания полноценного конструктора запросов для Postgres. Такого, который позволил бы избавится от использования строковых литералов при описаниии SQL запросов полностью.
+Эта библиотека писалась согласно официальной документации Postgres, и включает в себя весь базовый набор функционала для работы с этой СУБД. 
+А именно:
+- Функции манипуляции и получения данных (`SELECT`, `INSERT`, `DELETE`, `UPDATE`, `VALUES`)
+- Функции менеджмента таблиц и индексов (`CREATE`, `DROP`, `ALTER`)
+- Методы работы с SQL выражениями. (Унарные и бинарные операторы)
+- Огромный набор маппингов стандартных функций
+- Методы описания схеммы таблиц и других источников данных
+- Тегированные шаблонные строки (На случай если мы что то упустили)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Библиотека разрабатывалась с мыслями о строгой типизации и выведении типов, использовалось всё доступное могущество typescript.
 
-### Markdown
+Сама по себе библиотека не умеет делать запросы, однако удовлетворяет интерфейс популярного pg драйвера `node-pg`
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### 🔥 Install
 
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```sh
+npm i grespost
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+### ⭐️ Show your support
 
-### Jekyll Themes
+Give a ⭐️ if this project helped you!
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/shopmonkeyus/grespost/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+### 🤝 Contributing
 
-### Support or Contact
+Contributions, issues and feature requests are welcome!
+Feel free to check [issues page](https://github.com/shopmonkeyus/grespost/issues)
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+#### TODO
+- TRANSACTIONS
+- PGSQL 14
+
+
+### 👤 Authors
+
+**shopmonkeyus**
+
+* Website: https://www.shopmonkey.io/
+* Github: [@shopmonkeyus](https://github.com/shopmonkeyus)
+* LinkedIn: [@https:\/\/www.linkedin.com\/company\/shopmonkey\/](https://linkedin.com/in/https:\/\/www.linkedin.com\/company\/shopmonkey\/)
+
+**Igor Solomakha**
+
+* Github: [@sujimoshi](https://github.com/Sujimoshi)
+* LinkedIn: [@Igor Solomakha](https://www.linkedin.com/in/isolomakha/)
