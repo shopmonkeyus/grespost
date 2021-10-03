@@ -39,28 +39,22 @@ describe('example tests', () => {
   describe('create', () => {
     it('create users', async () => {
       const query = CREATE_TABLE({
-        name: UsersTable,
-        definition: {
-          columns: UsersTable.$.types
-        }
+        schema: UsersTable
       })
 
-      const { rows } = await pg.query(query)
-
       expect(query.toQuery()).toEqual(['CREATE TABLE users ( id UUID NOT NULL  PRIMARY KEY  DEFAULT GEN_RANDOM_UUID() , "name" TEXT NOT NULL  )', []])
+
+      const { rows } = await pg.query(query)
       expect(rows).toEqual([])
     })
 
     it('create permissions', async () => {
       const query = CREATE_TABLE({
-        name: PermissionsTable,
-        definition: {
-          columns: PermissionsTable.$.types
-        }
+        schema: PermissionsTable
       })
-      const { rows } = await pg.query(query)
-
       expect(query.toQuery()).toEqual(['CREATE TABLE permissions ( id UUID NOT NULL  PRIMARY KEY  DEFAULT GEN_RANDOM_UUID() , "name" TEXT NOT NULL , "userId" UUID  )', []])
+
+      const { rows } = await pg.query(query)
       expect(rows).toEqual([])
     })
   })
@@ -71,9 +65,9 @@ describe('example tests', () => {
         table: PermissionsTable,
         actions: [ADD_TABLE_CONSTRAINT(FOREIGN_KEY(['userId'], UsersTable))]
       })
-      const { rows } = await pg.query(query)
-
       expect(query.toQuery()).toEqual(['ALTER TABLE permissions ADD FOREIGN KEY ( "userId" ) REFERENCES users ', []])
+
+      const { rows } = await pg.query(query)
       expect(rows).toEqual([])
     })
   })

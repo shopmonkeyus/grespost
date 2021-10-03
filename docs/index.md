@@ -9,7 +9,7 @@
 - Методы работы с SQL выражениями. (Унарные и бинарные операторы)
 - Огромный набор маппингов стандартных функций
 - Методы описания схем таблиц и других источников данных
-- Тегированные шаблонные строки (На случай если мы что то упустили)
+- Тегированные шаблонные строки (На случай если вам нужно больше)
 
 Библиотека разрабатывалась с мыслями о строгой типизации и выведении типов, использовалось всё доступное могущество typescript.
 
@@ -27,7 +27,7 @@ npm i grespost
 
 ### Source schema declaration
 
-Описание схем источников данных (таблиц, отображений) один из важных элемнтов работы с данной библиотекой. Схеммы позволяют получить информацию о типах, а так же предоставляют удобный интерфейс взаимодействия с идентификаторами колонок и построения выражений.
+Описание схем источников данных (таблиц, отображений) один из важных элементов работы с данной библиотекой. Схеммы позволяют получить информацию о типах, а так же предоставляют удобный интерфейс взаимодействия с идентификаторами колонок и построения выражений.
 
 Для описания схеммы испольуется функция `source` со следующей сигнатурой:
 ```ts
@@ -119,7 +119,7 @@ export const PermissionsTable = source('permissions', {
 
 Как видите при обьявлении схемм мы воспользовались стандартной функцией postgres `GEN_RANDOM_UUID()`, данная библиотека имеет огромное количество маппингов на стандартные функции postgres, полный их перечень можно увидеть [здесь](https://github.com/shopmonkeyus/grespost/tree/master/src/functions).
 
-### Table creation
+### CREATE TABLE
 Создание таблицы в `grespost` производится с использованием функции `CREATE_TABLE` которая имеет следующую сигнатуру:
 
 ```typescript
@@ -129,14 +129,12 @@ interface CreateTableConfig {
   namespace?: 'GLOBAL' | 'LOCAL'
   type?: 'TEMPORARY' | 'UNLOGGED'
   ifNotExists?: boolean
-  name: string | Table
   partitionOf?: string
-
-  definition?: {
-    columns: Record<string, Type>
-    constraints?: Template[]
+  schema: Table | string | {
+    name: Table | string
+    columns: Table | Record<string, Type>
   }
-
+  constraints?: Template[]
   forValues?: PartitionBoundConfig
   inherits?: string[]
   partitionBy?: {
@@ -151,7 +149,7 @@ interface CreateTableConfig {
 ```
 Как видите создание sql запроса происходит декларативно, через описание некторого javascript обьекта, на выходе данная функция вернёт класс который можно передать напрямую в `node-pg`
 
-Давайте для примера создадим нашу таблицу Юзеры:
+Давайте для примера создадим нашу таблицу юзеров:
 ```ts
 import { UsersTable, PermissionsTable } from './schemas'
 import pg from 'pg'
@@ -159,10 +157,7 @@ import { CREATE_TABLE } from 'grespost'
 
 const createUsersTable = CREATE_TABLE({
   ifNotExists: true,
-  name: UsersTable,
-  definition: {
-    columns: UsersTable.$.types
-  }
+  schema: UsersTable,
 })
 
 console.log(createUsersTable.toQuery())
@@ -175,9 +170,6 @@ console.log(createUsersTable.toQuery())
 
 pg.query(createUsersTable) // void
 ```
-
-
-
 
 ### ⭐️ Show your support
 
@@ -199,7 +191,7 @@ Feel free to check [issues page](https://github.com/shopmonkeyus/grespost/issues
 
 * Website: https://www.shopmonkey.io/
 * Github: [@shopmonkeyus](https://github.com/shopmonkeyus)
-* LinkedIn: [@https:\/\/www.linkedin.com\/company\/shopmonkey\/](https://linkedin.com/in/https:\/\/www.linkedin.com\/company\/shopmonkey\/)
+* LinkedIn: [@shopmonkey](https://linkedin.com/in/https:\/\/www.linkedin.com\/company\/shopmonkey\/)
 
 **Igor Solomakha**
 

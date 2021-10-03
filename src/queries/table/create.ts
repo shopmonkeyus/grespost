@@ -1,4 +1,4 @@
-import { Expression, QueryDefinition, sql, Table, Template, Type } from '../..'
+import { Expression, QueryDefinition, sql, Table, TableIdentifier, Template, Type } from '../..'
 
 export const CREATE_TABLE = (config: CreateTableConfig) => {
   return new QueryDefinition(stringifyCreateTableConfig(config), [])
@@ -20,14 +20,12 @@ export interface CreateTableConfig {
   namespace?: 'GLOBAL' | 'LOCAL'
   type?: 'TEMPORARY' | 'UNLOGGED'
   ifNotExists?: boolean
-  name: string | Table
   partitionOf?: string
-
-  definition?: {
-    columns: Record<string, Type>
+  schema: Table | string | {
+    name: Table | string
+    columns: Table | Record<string, Type>
     constraints?: Template[]
   }
-
   forValues?: PartitionBoundConfig
   inherits?: string[]
   partitionBy?: {
@@ -44,14 +42,9 @@ export const stringifyCreateTableConfig = (config: CreateTableConfig) => {
   const NAMESPACE = config.namespace ? sql` ${sql.keyword(config.namespace, ['GLOBAL', 'LOCAL'])} ` : sql``
   const TYPE = config.type ? sql` ${sql.keyword(config.type, ['TEMPORARY', 'UNLOGGED'])} ` : sql``
   const IF_NOT_EXISTS = config.ifNotExists ? sql` IF NOT EXISTS` : sql``
-  const NAME = typeof config.name === 'string' ? sql.ident(config.name) : sql.ident(...config.name.$.name)
+  const NAME = stringifyName(config.schema)
   const PARTITION_OF = config.partitionOf ? sql` PARTITION OF ${sql.ident(config.partitionOf)} ` : sql``
-  const COLUMNS = config.definition
-    ? sql.join(Object.entries(config.definition.columns).map(([name, value]) =>
-      sql`${sql.ident(name)} ${value} ${sql.join(value.constraints, ' ')}`))
-    : sql``
-  const CONSTRAINTS = config.definition?.constraints ? sql`, ${sql.join(config.definition?.constraints, ' ')}` : sql``
-  const DEFINITION = config.definition ? sql` ( ${COLUMNS}${CONSTRAINTS} )` : sql``
+  const CONSTRAINTS = stringifyConstraints(config.schema)
   const FOR_VALUES = config.forValues ? sql` FOR VALUES ${stringifyForValues(config.forValues)}` : sql``
   const INHERITS = config.inherits ? sql` INHERITS (${sql.join(config.inherits.map(el => sql.ident(el)))})` : sql``
   const PARTITION_BY = stringifyPartitionBy(config.partitionBy)
@@ -64,7 +57,27 @@ export const stringifyCreateTableConfig = (config: CreateTableConfig) => {
   const ON_COMMIT = config.onCommit ? sql` ON COMMIT ${sql.keyword(config.onCommit, ['PRESERVE ROWS', 'DELETE ROWS', 'DROP'])}` : sql``
   const TABLESPACE = config.tablespace ? sql` TABLESPACE ${sql.ident(config.tablespace)}` : sql``
 
-  return sql`CREATE${NAMESPACE}${TYPE} TABLE${IF_NOT_EXISTS} ${NAME}${PARTITION_OF}${DEFINITION}${FOR_VALUES}${INHERITS}${PARTITION_BY}${USING}${WITH}${ON_COMMIT}${TABLESPACE}`
+  return sql`CREATE${NAMESPACE}${TYPE} TABLE${IF_NOT_EXISTS} ${NAME}${PARTITION_OF}${CONSTRAINTS}${FOR_VALUES}${INHERITS}${PARTITION_BY}${USING}${WITH}${ON_COMMIT}${TABLESPACE}`
+}
+
+export const stringifyName = (config: CreateTableConfig['schema']) => {
+  if (typeof config === 'string') return sql.ident(config)
+  return '$' in config
+    ? sql.ident(...config.$.name)
+    : typeof config.name === 'string'
+      ? sql.ident(config.name)
+      : sql.ident(...config.name.$.name)
+}
+
+export const stringifyConstraints = (config: CreateTableConfig['schema']) => {
+  if (typeof config === 'string') return sql``
+  const types = '$' in config ? config.$.types : '$' in config.columns ? (config.columns.$ as TableIdentifier).types : config.columns
+  const constraints = ('$' in config || !config.constraints) ? [] : config.constraints
+
+  const COLUMNS = sql.join(Object.entries(types).map(([name, value]: [string, any]) =>
+    sql`${sql.ident(name)} ${value} ${sql.join(value.constraints, ' ')}`))
+  const CONSTRAINTS = constraints.length ? sql`, ${sql.join(config.constraints, ' ')}` : sql``
+  return sql` ( ${COLUMNS}${CONSTRAINTS} )`
 }
 
 export const stringifyForValues = (config: PartitionBoundConfig) => {
