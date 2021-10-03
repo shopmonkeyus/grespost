@@ -1,7 +1,8 @@
 ## Grespost
 
-Эта библиотека была вдохновлена идеей написания полноценного конструктора запросов для Postgres. Такого, который позволил бы избавится от использования строковых литералов при описаниии SQL запросов полностью.
-Эта библиотека писалась согласно официальной документации Postgres, и включает в себя весь базовый набор функционала для работы с этой СУБД. 
+Эта библиотека была вдохновлена идеей написания полноценного конструктора запросов для Postgres. Такого, который позволил бы полностью избавится от использования строковых литералов при описаниии SQL запросов.
+
+Библиотека писалась согласно официальной документации Postgres, и включает в себя весь базовый набор функционала для работы с данной СУБД. 
 А именно:
 - Функции манипуляции и получения данных (`SELECT`, `INSERT`, `DELETE`, `UPDATE`, `VALUES`)
 - Функции менеджмента таблиц и индексов (`CREATE`, `DROP`, `ALTER`)
@@ -54,6 +55,11 @@ function BIGINT(): BigintType
 function NUMERIC(): NumerciType
 function REAL(): RealType
 function DOUBLE(): DoubleType // Aka FLOAT8 or DOUBLE PRECISION
+
+// Serial types
+function SMALLSERIAL(): SmallintType
+function SERIAL(): IntegerType
+function BIGSERIAL(): BigintType
 
 // Text Search types
 function TSQUERY(): TSQueryType
