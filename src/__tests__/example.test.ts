@@ -19,7 +19,7 @@ describe('example tests', () => {
     user: 'postgres',
     database: 'postgres',
     password: 'root',
-    host: 'localhost'
+    host: 'postgres'
   })
 
   afterAll(async () => {
