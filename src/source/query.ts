@@ -1,5 +1,5 @@
 import { Source } from '.'
-import { AnyExpression, expression } from '../expressions'
+import { AnyExpression, Expression, expression } from '../expressions'
 import { sql, Template, eident } from '../template'
 
 export type Query<T extends Record<string, AnyExpression> = any> = QuerySource<T> & T
@@ -29,7 +29,7 @@ export class QuerySource<T extends Record<string, AnyExpression> = Record<string
 }
 
 export class QueryDefinition<T extends Record<string, AnyExpression> = Record<string, AnyExpression>> extends Template implements Source<T> {
-  $ = this
+  $: this
   expr: T
 
   tmpl: Template
@@ -44,6 +44,11 @@ export class QueryDefinition<T extends Record<string, AnyExpression> = Record<st
 
   constructor (tmpl: Template, keys: string[], alias?: string, columns?: string[], cteAlias?: string, cteColumns?: string[]) {
     super([], [])
+
+    Object.defineProperty(this, '$', {
+      enumerable: false,
+      value: this
+    })
 
     this.tmpl = tmpl
 
@@ -91,5 +96,9 @@ export class QueryDefinition<T extends Record<string, AnyExpression> = Record<st
     const columns = this.columns && this.columns.length ? sql` ( ${sql.join(this.columns.map(el => sql.ident(el)))} )` : sql``
     const AS_ALIAS = this.alias ? sql` AS ${sql.ident(this.alias)}${columns}` : sql``
     return sql`${this.cteAlias ? sql.ident(this.cteAlias) : sql`( ${this.tmpl} )`}${AS_ALIAS}`
+  }
+
+  all (): { [K in keyof T]: T[K] } {
+    return expression`${this}.${sql.keyword('*')}`
   }
 }

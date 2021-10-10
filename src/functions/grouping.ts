@@ -1,4 +1,4 @@
-import { QueryDefinition, Type } from '..'
+import { Query, QueryDefinition, Type } from '..'
 import { Expression, expression } from '../expressions'
 import { sql } from '../template'
 
@@ -18,13 +18,13 @@ export function GROUPING_SETS (...args: (any | any[])[]) {
 }
 
 type QueryCombination<T extends Record<string, Expression>> =
-  QueryCombination<T>[] | QueryDefinition<T> | 'UNION' | 'UNION ALL' | 'INTERSECT' | 'INTERSECT ALL' | 'EXCEPT' | 'EXCEPT ALL'
+  QueryCombination<T>[] | Query<T> | QueryDefinition<T> | 'UNION' | 'UNION ALL' | 'INTERSECT' | 'INTERSECT ALL' | 'EXCEPT' | 'EXCEPT ALL'
 
 export function COMBINE <T extends Record<string, Expression>> (...args: QueryCombination<T>[]): QueryDefinition<T> {
   const template = sql`${sql.join(args.map(query => {
     if (Array.isArray(query)) return sql`( ${COMBINE(...query).$} )`
     if (typeof query === 'string') return sql.keyword(query, ['UNION', 'UNION ALL', 'INTERSECT', 'INTERSECT ALL', 'EXCEPT', 'EXCEPT ALL'])
-    return query.$
+    return sql`${query.$}`
   }), ' ')}`
   const [query] = args
   return new QueryDefinition(template, (query as unknown as QueryDefinition).$.keys)

@@ -9,7 +9,7 @@ export const CHAR = (n?: number) => type`CHAR${n !== undefined ? sql`(${n})` : s
 export type CharArg = CharType['argument']
 
 export interface CharType<R extends boolean = boolean> extends Type<'CHAR', R> {
-  expression: CharacterExpression<CharType<R>>
+  expression: StringExpression<CharType<R>>
   argument: Expression<CharType> | this['input'] | Expression<VarcharType> | Expression<TextType>
 
   required(conf?: ConstraintConfig): CharType<false>
@@ -19,7 +19,7 @@ export const VARCHAR = (n?: number) => type`VARCHAR${n !== undefined ? sql`(${n}
 export type VarcharArg = VarcharType['argument']
 
 export interface VarcharType<R extends boolean = boolean> extends Type<'VARCHAR', R> {
-  expression: CharacterExpression<VarcharType<R>>
+  expression: StringExpression<VarcharType<R>>
   argument: Expression<VarcharType> | this['input'] | Expression<CharType> | Expression<TextType>
 
   required(conf?: ConstraintConfig): VarcharType<false>
@@ -29,7 +29,7 @@ export const TEXT = () => type`TEXT` as TextType<true>
 export type TextArg = TextType['argument']
 
 export interface TextType<R extends boolean = boolean> extends Type<'TEXT', R> {
-  expression: CharacterExpression<TextType<R>>
+  expression: StringExpression<TextType<R>>
   argument: Expression<TextType> | this['input'] | Expression<CharType> | Expression<VarcharType>
 
   required(conf?: ConstraintConfig): TextType<false>
@@ -38,7 +38,7 @@ export interface TextType<R extends boolean = boolean> extends Type<'TEXT', R> {
 export type CharacterTypes = CharType<any> | VarcharType<any> | TextType<any>
 export type CharacterArg = CharacterTypes['argument']
 
-export interface CharacterExpression<T extends CharacterTypes = CharacterTypes> extends AnyExpression<T> {
+export interface StringExpression<T extends CharacterTypes = CharacterTypes> extends AnyExpression<T> {
   concat(arg: CharacterArg): Expression<TextType<T['nullable']>>
 
   match (arg: Expression<TSQueryType>): Expression<BooleanType<T['nullable']>>

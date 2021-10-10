@@ -3,6 +3,7 @@ import { literal } from '../../../expressions'
 import { NOW } from '../../../functions/datetime'
 import { source } from '../../../source/table'
 import { INTEGER, TEXT } from '../../../types'
+import { VALUES } from '../values'
 
 describe('SELECT', () => {
   const table = source('table', {

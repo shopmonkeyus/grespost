@@ -9,7 +9,7 @@ export type ArrayArg<T extends Type = Type> = ArrayType<T>['argument']
 
 export interface ArrayType<T extends Type = Type, R extends boolean = boolean> extends Type<'ARRAY', R, T['output']> {
   expression: ArrayExpression<T, R>
-  argument: Expression<ArrayType<T, R>> | this['input']
+  argument: Expression<ArrayType<T>> | this['input'] | Expression<T>[] | Expression
 
   required(conf?: ConstraintConfig): ArrayType<T, false>
 }

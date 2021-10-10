@@ -26,8 +26,15 @@ export class AnyExpression<T extends Type = Type> extends Template {
     return expression`${new Template(this.strings, this.literals)}${AS_ALIAS}`
   }
 
-  cast <NT extends Type> (type: NT): Expression<T['nullable'] extends false ? ReturnType<NT['required']> : NT> {
+  cast <NT extends Type> (type: NT): Expression<NT> {
     return expression`${this}::${type}`
+  }
+
+  /**
+   * Operation: ||
+   */
+  concat (operand: any): AnyExpression {
+    return expression`${this} || ${operand}`
   }
 
   /**
@@ -48,14 +55,14 @@ export class AnyExpression<T extends Type = Type> extends Template {
    * BooleanExpr: IS
    */
   is (operand: null | boolean | 'UNKNOWN'): Expression<BooleanType<T['nullable']>> {
-    return expression`${this} IS ${operand === 'UNKNOWN' ? sql.keyword('UNKNOWN') : operand}`
+    return expression`${this} IS ${operand === 'UNKNOWN' ? sql.keyword('UNKNOWN') : operand === null ? sql.keyword('NULL') : operand}`
   }
 
   /**
    * BooleanExpr: IS NOT
    */
   isNot (operand: null | boolean | 'UNKNOWN'): Expression<BooleanType<T['nullable']>> {
-    return expression`${this} IS NOT ${operand === 'UNKNOWN' ? sql.keyword('UNKNOWN') : operand}`
+    return expression`${this} IS NOT ${operand === 'UNKNOWN' ? sql.keyword('UNKNOWN') : operand === null ? sql.keyword('NULL') : operand}`
   }
 
   /**

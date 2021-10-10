@@ -37,10 +37,13 @@ export type PrimitiveToType<T, R extends boolean> =
   UnknownType<T, R>
 
 export type ToType<T> =
+  T extends Expression ? T['type'] :
   Exclude<T, null | undefined> extends never ? UnknownType<null, true> :
   null extends T ? PrimitiveToType<Exclude<T, null>, true> :
   undefined extends T ? PrimitiveToType<Exclude<T, undefined>, true> :
   PrimitiveToType<T, false>
+
+export type ToExpression<T> = T extends Expression ? T : Expression<ToType<T>>
 
 type IsUnknownRequired<T> = null extends T ? true : undefined extends T ? true : false
 export type UnknownLiteral<T> = UnknownType<T, IsUnknownRequired<T>>

@@ -1,4 +1,4 @@
-import { AnyExpression, condition, expression, Condition, Expression, ToType } from '../expressions'
+import { AnyExpression, condition, expression, Condition, Expression, ToType, ToExpression } from '../expressions'
 import { Type, IntegerType, ArrayArg, BooleanType } from '../types'
 import { sql } from '../template'
 import { Query } from '..'
@@ -16,10 +16,10 @@ export function CASE <T extends CaseConfig[], E> (cases: T, $else: E): Expressio
 export function CASE <T extends CaseConfig[]> (cases: T): Expression<ToType<T[number]['then']>>
 export function CASE (cases: CaseConfig[], $else?: any): AnyExpression {
   const whenThen = cases.map(({ when, then }) => sql`WHEN ${condition(when)} THEN ${then}`)
-  return expression`CASE ${sql.join(whenThen, ' ')}${$else ? sql` ELSE ${$else}` : sql``}`
+  return expression`CASE ${sql.join(whenThen, ' ')}${$else ? sql` ELSE ${$else}` : sql``} END`
 }
 
-export function COALESCE <T extends any[]> (...args: T): Expression<ToType<T[number]>> {
+export function COALESCE <T extends any[]> (...args: T): ToExpression<T[number]> {
   return expression`COALESCE(${sql.join([...args])})`
 }
 
@@ -57,6 +57,8 @@ export function EXISTS (subquery: Query): Expression<BooleanType> {
   return expression`EXISTS(${subquery.$})`
 }
 
+export function ROW (...args: any[]): Expression
+export function ROW (subquery: Query): Expression
 export function ROW (subquery: Query, ...args: any[]): Expression {
   return expression`ROW(${sql.join(typeof subquery === 'object' && '$' in subquery ? [subquery.$] : [subquery, ...args])})`
 }

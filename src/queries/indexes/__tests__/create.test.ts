@@ -144,6 +144,6 @@ describe('create index query', () => {
       table: table,
       columns: [table.id],
       where: table.id.isNot(null)
-    }).toQuery()).toEqual(['CREATE INDEX ON "table" ( "table".id ) WHERE "table".id IS NOT $1', [null]])
+    }).toQuery()).toEqual(['CREATE INDEX ON "table" ( "table".id ) WHERE "table".id IS NOT NULL', []])
   })
 })

@@ -1,6 +1,8 @@
-import { ADD_TABLE_CONSTRAINT, ALTER_TABLE, AnyExpression, CREATE_TABLE, DROP_TABLE, FOREIGN_KEY, GEN_RANDOM_UUID, INSERT, JSON_AGG, JSON_BUILD_OBJECT, QueryDefinition, SELECT, source, TEXT, UPDATE, UUID, VALUES } from '../'
+import { ADD_TABLE_CONSTRAINT, ALTER_TABLE, AnyExpression, ARR, ARRAY, CREATE_TABLE, DROP_TABLE, FOREIGN_KEY, GEN_RANDOM_UUID, INSERT, JSON_AGG, JSON_BUILD_OBJECT, QueryDefinition, SELECT, source, TEXT, UPDATE, UUID, VALUES } from '../'
 import events from 'events'
 import { Pool, QueryResult } from 'pg'
+import { COALESCE, COMBINE, JSONB_BUILD_OBJECT, UNNEST } from '../functions'
+import { literal } from '../expressions'
 
 declare module 'pg' {
   interface Pool extends events.EventEmitter {

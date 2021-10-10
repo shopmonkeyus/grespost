@@ -98,6 +98,6 @@ describe('#from', () => {
         source: any,
         on: [some.id.eq(any.id), 'AND', some.id.isNot(null)]
       }]
-    }).toQuery()).toEqual(['foo CROSS JOIN ( SELECT * FROM "some" ) AS "any" ON ( "some".id = "any".id AND "some".id IS NOT $1 )', [null]])
+    }).toQuery()).toEqual(['foo CROSS JOIN ( SELECT * FROM "some" ) AS "any" ON ( "some".id = "any".id AND "some".id IS NOT NULL )', []])
   })
 })

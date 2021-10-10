@@ -38,7 +38,7 @@ describe('comparison functions', () => {
   it('CASE', () => {
     expect(CASE([{ when: table.id.eq('1'), then: 1 }, { when: table.id.eq('2'), then: 2 }], '5').toQuery()).toEqual(
       [
-        'CASE WHEN "table".id = $1 THEN $2 WHEN "table".id = $3 THEN $4 ELSE $5',
+        'CASE WHEN "table".id = $1 THEN $2 WHEN "table".id = $3 THEN $4 ELSE $5 END',
         [
           '1',
           1,
@@ -53,7 +53,7 @@ describe('comparison functions', () => {
   it('CASE1', () => {
     expect(CASE([{ when: table.id.eq('1'), then: 1 }]).toQuery()).toEqual(
       [
-        'CASE WHEN "table".id = $1 THEN $2',
+        'CASE WHEN "table".id = $1 THEN $2 END',
         [
           '1',
           1
