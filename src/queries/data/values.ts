@@ -4,7 +4,7 @@ import { Template, sql } from '../../template'
 
 export function VALUES <T>(config: T[][]): QueryDefinition<Record<string, Expression<ToType<T>>>>
 export function VALUES <C extends string, V>(config: { columns: C[], values: V[][] }): QueryDefinition<Record<C, Expression<ToType<V>>>>
-export function VALUES <R extends Array<Record<string, any>>>(config: R): QueryDefinition<{ [K in keyof R[number]]-?: Expression<UnknownLiteral<R[number][K]>> }>
+export function VALUES <R extends Array<Record<string, any>>>(config: R): QueryDefinition<{ [K in keyof R[number]]-?: R[number][K] extends Expression ? R[number][K] : Expression<UnknownLiteral<R[number][K]>> }>
 export function VALUES (config: any[][] | Record<string, any>[] | { columns: string[], values: any[][] }) {
   let VALUES: Template
   let columns: string[]

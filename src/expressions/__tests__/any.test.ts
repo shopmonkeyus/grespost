@@ -71,8 +71,8 @@ describe('any expression', () => {
     )
     expect(table.field.is(null).toQuery()).toEqual(
       [
-        'src.field IS $1',
-        [null]
+        'src.field IS NULL',
+        []
       ]
     )
   })
@@ -86,10 +86,8 @@ describe('any expression', () => {
     )
     expect(table.field.isNot(null).toQuery()).toEqual(
       [
-        'src.field IS NOT $1',
-        [
-          null
-        ]
+        'src.field IS NOT NULL',
+        []
       ]
     )
   })

@@ -17,8 +17,8 @@ describe('aggregate functions', () => {
       filterWhere: table.id.isNot(null)
     }).toQuery()).toEqual(
       [
-        'ARRAY_AGG(DISTINCT "table".id ORDER BY "table".id) WITHIN GROUP ( ORDER BY "table".id ) FILTER ( WHERE "table".id IS NOT $1 )',
-        [null]
+        'ARRAY_AGG(DISTINCT "table".id ORDER BY "table".id) WITHIN GROUP ( ORDER BY "table".id ) FILTER ( WHERE "table".id IS NOT NULL )',
+        []
       ]
     )
   })

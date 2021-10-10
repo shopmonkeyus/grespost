@@ -60,7 +60,7 @@ export interface DefaultOutputMapping<T = any> {
 }
 
 export interface DefaultInputMapping<T = any> {
-  UNKNOWN: null
+  UNKNOWN: any
   INTERVAL: string
   ARRAY: Array<T> | string
   TSVECTOR: string

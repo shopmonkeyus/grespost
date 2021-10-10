@@ -6,13 +6,6 @@ import { AnyExpression } from './any'
 export function StringOps <T extends Constructor> (Base: T) {
   return class StringOps extends Base {
     /**
-     * Operation: ||
-     */
-    concat (operand: any): AnyExpression {
-      return expression`${this} || ${operand}`
-    }
-
-    /**
      * @description Checks whether the string is in the specified Unicode normalization form.
      * The optional form key word specifies the form: NFC (the default), NFD, NFKC, or NFKD.
      * This expression can only be used when the server encoding is UTF8.
