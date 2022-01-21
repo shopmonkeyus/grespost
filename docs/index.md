@@ -1,4 +1,4 @@
-## Grespost
+## Overview
 
 Эта библиотека была вдохновлена идеей написания полноценного конструктора запросов для Postgres. Такого, который позволил бы полностью избавится от использования строковых литералов при описаниии SQL запросов.
 
@@ -17,15 +17,9 @@
 
 Сама по себе библиотека не умеет делать запросы, однако удовлетворяет интерфейс популярного драйвера `node-pg`
 
-### 🔥 Install
-
-```sh
-npm i grespost
-```
-
 ## 📚 Documentation
 
-### Source schema declaration
+### SOURCE SCHEMAS
 
 Описание схем источников данных (таблиц, отображений) один из важных элементов работы с данной библиотекой. Схеммы позволяют получить информацию о типах, а так же предоставляют удобный интерфейс взаимодействия с идентификаторами колонок и построения выражений.
 
@@ -34,7 +28,7 @@ npm i grespost
 function source<T extends Record<string, Type>> (name: string, types: T): Table<T>
 ```
 
-Как видно, для описания схеммы используется тип `Type` который описывает Postgres Data Type. Данная библиотека включает в себя следующий наборт поддерживаемых типов:
+Как видно, для описания схеммы используется тип `Type` который описывает Postgres Data Type. Данная библиотека включает в себя следующий набор поддерживаемых типов:
 ```typescript
 // Bit/Byte/Bool types
 function BOOLEAN(): BooleanType
@@ -155,37 +149,35 @@ import { UsersTable, PermissionsTable } from './schemas'
 import pg from 'pg'
 import { CREATE_TABLE } from 'grespost'
 
-const createUsersTable = CREATE_TABLE({
-  ifNotExists: true,
-  schema: UsersTable,
-})
-
-console.log(createUsersTable.toQuery())
 /*
   СREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY DEFAULT GEN_RANDOM_UUID()
     name TEXT NOT NULL
   )
 */
+await pg.query(CREATE_TABLE({
+  ifNotExists: true,
+  schema: UsersTable,
+}))
 
-pg.query(createUsersTable) // void
+await pg.query(CREATE_TABLE({ schema: PermissionsTable }))
 ```
 
-### ⭐️ Show your support
+## ⭐️ Show your support
 
 Give a ⭐️ if this project helped you!
 
-### 🤝 Contributing
+## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!
 Feel free to check [issues page](https://github.com/shopmonkeyus/grespost/issues)
 
-#### TODO
+### TODO
 - TRANSACTIONS
 - PGSQL 14
 
 
-### 👤 Authors
+## 👤 Authors
 
 **shopmonkeyus**
 
