@@ -1,9 +1,10 @@
+import { Type } from '../'
 import { DoubleType, InferMathTypePrec, IntegerArg, IntegralType, MathType, NumericType } from '.'
 import { AnyExpression, Expression } from '../../expressions'
 import { DateArg, DateType } from '../datetime/date'
 import { NumberExpression } from './number'
 
-export interface IntegralExpression<T extends IntegralType = IntegralType> extends AnyExpression<T> {
+export interface IntegralExpression<T extends Type = IntegralType> extends AnyExpression<T> {
   add (arg: T['input']): Expression<NumericType<T['nullable']>>
   add <A extends MathType>(arg: NumberExpression<A>): Expression<InferMathTypePrec<T, A, T['nullable']>>
   add <A extends IntegralType>(arg: IntegralExpression<A>): IntegralExpression<InferMathTypePrec<T, A, T['nullable']>>

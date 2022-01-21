@@ -78,7 +78,7 @@ export interface DoubleType<R extends boolean = boolean> extends Type<'DOUBLE', 
 
 export type MathTypesPrec<R extends boolean> = [SmallintType<R>, IntegerType<R>, BigintType<R>, NumericType<R>, RealType<R>, DoubleType<R>]
 
-export type InferMathTypePrec<X extends T[number], Y extends T[number], V extends boolean = boolean, T extends any[] = MathTypesPrec<V>> =
+export type InferMathTypePrec<X, Y, V extends boolean = boolean, T extends any[] = MathTypesPrec<V>> =
   T extends [...infer R, infer L] ? L extends X ? X : L extends Y ? Y : InferMathTypePrec<X, Y, V, R> : never
 
 export type ToMathExpression<T extends (MathArg)> = T extends MathExpression ? T : Expression<NumericType>

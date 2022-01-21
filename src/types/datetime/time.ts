@@ -35,7 +35,7 @@ export type TimeTypes = TimeType | TimetzType
 export type TimeLiteral = TimeTypes['input']
 export type TimeArg = TimeTypes['argument']
 
-export interface TimeExpression<T extends TimeTypes = TimeTypes> extends AnyExpression<T> {
+export interface TimeExpression<T extends Type> extends AnyExpression<T> {
   concat(arg: CharacterArg): Expression<TextType<T['nullable']>>
 
   add(arg: DateArg): Expression<TimestampType<T['nullable']>>

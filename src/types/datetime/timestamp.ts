@@ -31,7 +31,7 @@ export interface TimestamptzType<R extends boolean = boolean> extends Type<'TIME
 export type TimestampTypes = TimestampType | TimestamptzType
 export type TimestampArg = TimestampTypes['argument']
 
-export interface TimestampExpression<T extends TimestampTypes = TimestampTypes> extends AnyExpression<T> {
+export interface TimestampExpression<T extends Type = TimestampTypes> extends AnyExpression<T> {
   concat(arg: CharacterArg): Expression<TextType<T['nullable']>>
 
   add(arg: IntervalArg): TimestampExpression<T>
