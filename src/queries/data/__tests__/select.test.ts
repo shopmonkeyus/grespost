@@ -16,10 +16,6 @@ describe('SELECT', () => {
       .toEqual(['SELECT t.* AS "all" FROM "table" AS t', []])
   })
 
-  it('clean', () => {
-    expect(SELECT({}).toQuery()).toEqual(['SELECT', []])
-  })
-
   it('with', () => {
     const query = SELECT({ from: table }).asCTE('query')
     expect(SELECT({ with: [query], from: [{ source: query }] }).toQuery())
@@ -28,7 +24,7 @@ describe('SELECT', () => {
 
   it('fields', () => {
     expect(SELECT({ fields: { f: NOW() } }).toQuery()).toEqual(['SELECT NOW() AS f', []])
-    expect(SELECT({ fields: '*' }).toQuery()).toEqual(['SELECT *', []])
+    expect(SELECT({}).toQuery()).toEqual(['SELECT *', []])
   })
 
   it('distinct', () => {

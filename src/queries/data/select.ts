@@ -12,7 +12,7 @@ const returning = (config: SelectConfig): string[] => {
   return from ? Object.keys('$' in from ? from : from.source) : []
 }
 
-type U2I<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
+type U2I<U> = (U extends any ? (k: U) => any : never) extends ((k: infer I) => any) ? I : never
 
 type ArrayToUnion<T> = T extends Array<infer I> ? I : T
 
@@ -27,10 +27,7 @@ type IfExists<O, T, E> = undefined extends O ? E : T
 
 type InferFromType<T> = ArrayToUnion<T> extends (Source<infer R> | { source: Source<infer R> }) ? R : never
 
-type InferReturning<T extends SelectConfig> = IfExists<T['fields'],
-  T['fields'] extends '*' ? InferFromType<T['from']> : MapToExpression<T['fields']>,
-  InferFromType<T['from']>
->
+type InferReturning<T extends SelectConfig> = IfExists<T['fields'], MapToExpression<T['fields']>, InferFromType<T['from']>>
 
 export function SELECT <T extends SelectConfig> (config: T) {
   type Ret = U2I<InferReturning<T>>
@@ -41,7 +38,7 @@ export function SELECT <T extends SelectConfig> (config: T) {
 export interface SelectConfig {
   with?: WithConfig
   distinct?: boolean | AnyExpression[]
-  fields?: FieldsConfig | '*'
+  fields?: FieldsConfig
   from?: FromConfig
   where?: Condition
   groupBy?: (AnyExpression | AnyExpression[])[]
@@ -73,7 +70,7 @@ export interface SelectConfig {
 export const stringifySelect = (config: SelectConfig): Template => {
   const WITH = config.with ? sql`WITH ${stringifyWith(config.with)} ` : sql``
   const DISTINCT = config.distinct !== undefined ? sql` ${stringifyDistinct(config.distinct)}` : sql``
-  const FIELDS = config.fields ? config.fields === '*' ? sql` *` : sql` ${stringifyFields(config.fields)}` : config.from ? sql` *` : sql``
+  const FIELDS = config.fields ? sql` ${stringifyFields(config.fields)}` : sql` *`
   const FROM = config.from ? sql` FROM ${stringifyFrom(config.from)}` : sql``
   const WHERE = config.where ? sql` WHERE ${condition(config.where)}` : sql``
   const GROUPING = config.groupBy ? sql` GROUP BY ${sql.join(config.groupBy.map(el => stringifyGroupedExpression(el)))}` : sql``
