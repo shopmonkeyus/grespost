@@ -10,14 +10,14 @@ export const DATE = () => type`DATE` as DateType<true>
 
 export type DateArg = DateType['argument']
 
-export interface DateType<R extends boolean = boolean> extends Type<'DATE', R> {
+export interface DateType<R extends boolean = any> extends Type<'DATE', R> {
   expression: DateExpression<R>
   argument: Expression<DateType> | this['input']
 
   required(conf?: ConstraintConfig): DateType<false>
 }
 
-interface DateExpression<R extends boolean = boolean> extends AnyExpression<DateType<R>> {
+interface DateExpression<R extends boolean = any> extends AnyExpression<DateType<R>> {
   concat(arg: CharacterArg): Expression<TextType<R>>
 
   add(arg: IntegerArg): Expression<DateType<R>>

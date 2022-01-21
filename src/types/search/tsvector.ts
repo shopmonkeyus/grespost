@@ -7,14 +7,14 @@ export const TSVECTOR = () => type`TSVECTOR` as TSVectorType<true>
 
 export type TSVectorArg = TSVectorType['argument']
 
-export interface TSVectorType<R extends boolean = boolean> extends Type<'TSVECTOR', R> {
+export interface TSVectorType<R extends boolean = any> extends Type<'TSVECTOR', R> {
   expression: TSVectorExpression<R>
   argument: Expression<TSVectorType> | this['input']
 
   required(conf?: ConstraintConfig): TSVectorType<false>
 }
 
-export interface TSVectorExpression<R extends boolean = boolean> extends AnyExpression<TSVectorType<R>> {
+export interface TSVectorExpression<R extends boolean = any> extends AnyExpression<TSVectorType<R>> {
   concat(arg: TSVectorArg): Expression<TSVectorType<R>>
   concat(arg: CharacterArg): Expression<TextType<R>>
 

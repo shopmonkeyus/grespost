@@ -9,7 +9,7 @@ export const BIT = (n?: number) => type`BIT${n ? sql`(${n})` : sql``}` as BitTyp
 
 export type BitArg = BitType['argument']
 
-export interface BitType<R extends boolean = boolean> extends Type<'BIT', R> {
+export interface BitType<R extends boolean = any> extends Type<'BIT', R> {
   expression: BinaryExpression<BitType<R>>
   argument: Expression<BitType> | this['input'] | Expression<VarbitType>
 
@@ -20,7 +20,7 @@ export const VARBIT = (n?: number) => type`VARBIT${n ? sql`(${n})` : sql``}` as 
 
 export type VarbitArg = VarbitType['argument']
 
-export interface VarbitType<R extends boolean = boolean> extends Type<'VARBIT', R> {
+export interface VarbitType<R extends boolean = any> extends Type<'VARBIT', R> {
   expression: BinaryExpression<VarbitType<R>>
   argument: Expression<VarbitType> | this['input'] | Expression<BitType>
 

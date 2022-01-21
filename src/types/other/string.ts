@@ -8,7 +8,7 @@ import { TSQueryType } from '../search/tsquery'
 export const CHAR = (n?: number) => type`CHAR${n !== undefined ? sql`(${n})` : sql``}` as CharType<true>
 export type CharArg = CharType['argument']
 
-export interface CharType<R extends boolean = boolean> extends Type<'CHAR', R> {
+export interface CharType<R extends boolean = any> extends Type<'CHAR', R> {
   expression: StringExpression<CharType<R>>
   argument: Expression<CharType> | this['input'] | Expression<VarcharType> | Expression<TextType>
 
@@ -18,7 +18,7 @@ export interface CharType<R extends boolean = boolean> extends Type<'CHAR', R> {
 export const VARCHAR = (n?: number) => type`VARCHAR${n !== undefined ? sql`(${n})` : sql``}` as VarcharType<true>
 export type VarcharArg = VarcharType['argument']
 
-export interface VarcharType<R extends boolean = boolean> extends Type<'VARCHAR', R> {
+export interface VarcharType<R extends boolean = any> extends Type<'VARCHAR', R> {
   expression: StringExpression<VarcharType<R>>
   argument: Expression<VarcharType> | this['input'] | Expression<CharType> | Expression<TextType>
 
@@ -28,7 +28,7 @@ export interface VarcharType<R extends boolean = boolean> extends Type<'VARCHAR'
 export const TEXT = () => type`TEXT` as TextType<true>
 export type TextArg = TextType['argument']
 
-export interface TextType<R extends boolean = boolean> extends Type<'TEXT', R> {
+export interface TextType<R extends boolean = any> extends Type<'TEXT', R> {
   expression: StringExpression<TextType<R>>
   argument: Expression<TextType> | this['input'] | Expression<CharType> | Expression<VarcharType>
 

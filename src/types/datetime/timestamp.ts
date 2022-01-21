@@ -9,7 +9,7 @@ export const TIMESTAMP = (precission?: number) => type`TIMESTAMP${precission ? s
 
 export type TimestampTypeArg = TimestampType['argument']
 
-export interface TimestampType<R extends boolean = boolean> extends Type<'TIMESTAMP', R> {
+export interface TimestampType<R extends boolean = any> extends Type<'TIMESTAMP', R> {
   expression: TimestampExpression<TimestampType<R>>
   argument: Expression<TimestampType> | this['input']
 
@@ -21,7 +21,7 @@ export const TIMESTAMPTZ = (precission?: number) => type`TIMESTAMPTZ${precission
 export type TimestamptzTypeLiteral = TimestamptzType['input']
 export type TimestamptzTypeArg = TimestamptzType['argument']
 
-export interface TimestamptzType<R extends boolean = boolean> extends Type<'TIMESTAMPTZ', R> {
+export interface TimestamptzType<R extends boolean = any> extends Type<'TIMESTAMPTZ', R> {
   expression: TimestampExpression<TimestamptzType<R>>
   argument: Expression<TimestamptzType> | this['input']
 

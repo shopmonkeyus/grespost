@@ -12,7 +12,7 @@ export const TIME = (precission?: number) => type`TIME${precission ? sql`(${prec
 export type TimeTypeLiteral = TimeType['input']
 export type TimeTypeArg = TimeType['argument']
 
-export interface TimeType<R extends boolean = boolean> extends Type<'TIME', R> {
+export interface TimeType<R extends boolean = any> extends Type<'TIME', R> {
   expression: TimeExpression<TimeType<R>>
   argument: Expression<TimeType> | this['input']
 
@@ -24,7 +24,7 @@ export const TIMETZ = (precission?: number) => type`TIMETZ${precission ? sql`(${
 export type TimetzTypeLiteral = TimeType['input']
 export type TimetzTypeArg = TimeType['argument']
 
-export interface TimetzType<R extends boolean = boolean> extends Type<'TIMETZ', R> {
+export interface TimetzType<R extends boolean = any> extends Type<'TIMETZ', R> {
   expression: TimeExpression<TimetzType<R>>
   argument: Expression<TimetzType> | this['input']
 

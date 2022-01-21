@@ -7,14 +7,14 @@ export const BYTEA = () => type`BYTEA` as ByteaType<true>
 
 export type ByteaArg = ByteaType['argument']
 
-export interface ByteaType<R extends boolean = boolean> extends Type<'BYTEA', R> {
+export interface ByteaType<R extends boolean = any> extends Type<'BYTEA', R> {
   expression: ByteaExpression<R>
   argument: Expression<ByteaType> | this['input']
 
   required(conf?: ConstraintConfig): ByteaType<false>
 }
 
-export interface ByteaExpression<R extends boolean = boolean> extends AnyExpression<ByteaType<R>> {
+export interface ByteaExpression<R extends boolean = any> extends AnyExpression<ByteaType<R>> {
   concat(arg: ByteaArg): ByteaExpression<R>
   concat(arg: CharacterArg): Expression<TextType<R>>
 }

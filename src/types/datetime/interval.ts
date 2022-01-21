@@ -22,14 +22,14 @@ export interface PostgresInterval {
 
 export type IntervalArg = IntervalType['argument']
 
-export interface IntervalType<R extends boolean = boolean> extends Type<'INTERVAL', R> {
+export interface IntervalType<R extends boolean = any> extends Type<'INTERVAL', R> {
   expression: IntervalExpression<R>
   argument: Expression<IntervalType> | this['input']
 
   required(conf?: ConstraintConfig): IntervalType<false>
 }
 
-export interface IntervalExpression<R extends boolean = boolean> extends AnyExpression<IntervalType<R>> {
+export interface IntervalExpression<R extends boolean = any> extends AnyExpression<IntervalType<R>> {
   concat(arg: CharacterArg): Expression<TextType<R>>
 
   add(arg: IntervalArg): Expression<IntervalType<R>>

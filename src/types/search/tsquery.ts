@@ -8,14 +8,14 @@ export const TSQUERY = () => type`TSQUERY` as TSQueryType<true>
 
 export type TSQueryArg = TSQueryType['argument']
 
-export interface TSQueryType<R extends boolean = boolean> extends Type<'TSQUERY', R> {
+export interface TSQueryType<R extends boolean = any> extends Type<'TSQUERY', R> {
   expression: TSQueryExpression<R>
   argument: Expression<TSQueryType> | this['input']
 
   required(conf?: ConstraintConfig): TSQueryType<false>
 }
 
-export interface TSQueryExpression<R extends boolean = boolean> extends AnyExpression<TSQueryType<R>> {
+export interface TSQueryExpression<R extends boolean = any> extends AnyExpression<TSQueryType<R>> {
   concat (arg: CharacterArg): Expression<TextType<R>>
 
   match (arg: TSVectorArg): Expression<BooleanType<R>>

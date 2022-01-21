@@ -7,13 +7,13 @@ export const BOOLEAN = () => type`BOOLEAN` as BooleanType<true>
 
 export type BooleanArg = BooleanType['argument']
 
-export interface BooleanType<R extends boolean = boolean> extends Type<'BOOLEAN', R> {
+export interface BooleanType<R extends boolean = any> extends Type<'BOOLEAN', R> {
   expression: BooleanExpression<R>
   argument: BooleanExpression | this['input']
 
   required(conf?: ConstraintConfig): BooleanType<false>
 }
 
-export interface BooleanExpression<R extends boolean = boolean> extends AnyExpression<BooleanType<R>> {
+export interface BooleanExpression<R extends boolean = any> extends AnyExpression<BooleanType<R>> {
   concat(arg: CharacterArg): Expression<TextType<R>>
 }

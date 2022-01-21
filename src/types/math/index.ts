@@ -12,7 +12,7 @@ export const SMALLSERIAL = () => type`SMALLSERIAL` as SmallintType<true>
 
 export type SmallintArg = SmallintType['argument']
 
-export interface SmallintType<R extends boolean = boolean> extends Type<'SMALLINT', R> {
+export interface SmallintType<R extends boolean = any> extends Type<'SMALLINT', R> {
   expression: IntegralExpression<SmallintType<R>>
   argument: Expression<SmallintType> | this['input']
 
@@ -24,7 +24,7 @@ export const SERIAL = () => type`SERIAL` as IntegerType<true>
 
 export type IntegerArg = IntegerType['argument']
 
-export interface IntegerType<R extends boolean = boolean> extends Type<'INTEGER', R> {
+export interface IntegerType<R extends boolean = any> extends Type<'INTEGER', R> {
   expression: IntegralExpression<IntegerType<R>>
   argument: Expression<IntegerType> | this['input'] | Expression<SmallintType>
 
@@ -36,7 +36,7 @@ export const BIGSERIAL = () => type`SERIAL` as BigintType<true>
 
 export type BigintArg = BigintType['argument']
 
-export interface BigintType<R extends boolean = boolean> extends Type<'BIGINT', R> {
+export interface BigintType<R extends boolean = any> extends Type<'BIGINT', R> {
   expression: IntegralExpression<BigintType<R>>
   argument: Expression<BigintType> | this['input'] | Expression<SmallintType> | Expression<IntegerType>
 
@@ -47,7 +47,7 @@ export const NUMERIC = () => type`NUMERIC` as NumericType<true>
 
 export type NumericArg = NumericType['argument']
 
-export interface NumericType<R extends boolean = boolean> extends Type<'NUMERIC', R> {
+export interface NumericType<R extends boolean = any> extends Type<'NUMERIC', R> {
   expression: NumberExpression<NumericType<R>>
   argument: Expression<NumericType> | this['input'] | Expression<SmallintType> | Expression<IntegerType> | Expression<BigintType>
 
@@ -58,7 +58,7 @@ export const REAL = () => type`REAL` as RealType<true>
 
 export type RealArg = RealType['argument']
 
-export interface RealType<R extends boolean = boolean> extends Type<'REAL', R> {
+export interface RealType<R extends boolean = any> extends Type<'REAL', R> {
   expression: NumberExpression<RealType<R>>
   argument: Expression<RealType> | this['input'] | Expression<SmallintType> | Expression<IntegerType> | Expression<BigintType> | Expression<NumericType>
 
@@ -69,7 +69,7 @@ export const DOUBLE = () => type`DOUBLE PRECISION` as DoubleType<true>
 
 export type DoubleArg = DoubleType['argument']
 
-export interface DoubleType<R extends boolean = boolean> extends Type<'DOUBLE', R> {
+export interface DoubleType<R extends boolean = any> extends Type<'DOUBLE', R> {
   expression: NumberExpression<DoubleType<R>>
   argument: Expression<DoubleType> | this['input'] | Expression<SmallintType> | Expression<IntegerType> | Expression<BigintType> | Expression<NumericType> | Expression<RealType>
 
