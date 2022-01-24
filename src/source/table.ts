@@ -42,7 +42,7 @@ export class TableSource<T extends Record<string, Type> = Record<string, Type>> 
 export class TableIdentifier<T extends Record<string, Type> = Record<string, Type>> extends Template implements Source<{ [K in keyof T]: T[K]['expression'] }> {
   $ = this
   expr: { [K in keyof T]: T[K]['expression'] }
-  type: { [K in keyof T]: T[K]['output'] }
+  type: { [K in keyof T]: T[K]['primitive'] }
 
   constructor (public name: string[], private typings: T, public alias?: string, public columns?: string[]) {
     super([], [])
