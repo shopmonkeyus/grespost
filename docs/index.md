@@ -1,34 +1,34 @@
 ## Overview
 
-Эта библиотека была вдохновлена идеей написания полноценного конструктора запросов для Postgres. Такого, который позволил бы полностью избавится от использования строковых литералов при описаниии SQL запросов.
+This library was inspired by the idea of writing a complete query builder for Postgres. One that would completely get rid of the use of string literals when describing SQL queries.
 
-Библиотека писалась согласно официальной документации Postgres, и включает в себя весь базовый набор функционала для работы с данной СУБД. 
-А именно:
-- Функции манипуляции и получения данных (`SELECT`, `INSERT`, `DELETE`, `UPDATE`, `VALUES`)
-- Функции менеджмента таблиц и индексов (`CREATE`, `DROP`, `ALTER`)
-- Методы работы с SQL выражениями. (Унарные и бинарные операторы)
-- Огромный набор маппингов стандартных функций
-- Методы описания схем таблиц и других источников данных
-- Тегированные шаблонные строки (На случай если вам нужно больше)
+The library was written according to the official Postgres documentation, and includes the entire basic set of functionality for working with this DBMS.
+Functionality overview:
+- Data manipulation and retrieval functions (`SELECT`, `INSERT`, `DELETE`, `UPDATE`, `VALUES`)
+- Table and index management functions (`CREATE`, `DROP`, `ALTER`)
+- Methods of working with SQL expressions. (Unary and binary operators)
+- Huge set of standard function mappings
+- Methods for describing table schemas and other data sources
+- Tagged Template Strings (In case you need more)
 
-Библиотека разрабатывалась с мыслями о строгой типизации и выведении типов, использовалось всё доступное могущество typescript.
+The library was developed with strong typing and type inference in mind, using all the available power of typescript.
 
-В отличии от других конструкторов запросов `grespost` имеет декларативный интерфейс. Что, само по себе, намного ближе к тому как мы пишем sql запросы нативно.
+Unlike other query builders, `grespost` has a declarative interface. Which, in itself, is much closer to how we write sql queries natively.
 
-Сама по себе библиотека не умеет делать запросы, однако удовлетворяет интерфейс популярного драйвера `node-pg`
+The library itself does not know how to make requests, but satisfies the interface of the popular nodejs postgres driver `node-pg`
 
 ## 📚 Documentation
 
 ### SOURCE SCHEMAS
 
-Описание схем источников данных (таблиц, отображений) один из важных элементов работы с данной библиотекой. Схеммы позволяют получить информацию о типах, а так же предоставляют удобный интерфейс взаимодействия с идентификаторами колонок и построения выражений.
+Description of schemas of data sources (tables, views) is one of the important elements of working with this library. Schemas allow you to get information about types, as well as provide a convenient interface for interacting with column identifiers and building expressions.
 
-Для описания схеммы испольуется функция `source` со следующей сигнатурой:
+The schema is described using the `source` function with the following signature:
 ```ts
 function source<T extends Record<string, Type>> (name: string, types: T): Table<T>
 ```
 
-Как видно, для описания схеммы используется тип `Type` который описывает Postgres Data Type. Данная библиотека включает в себя следующий набор поддерживаемых типов:
+As you can see, the `Type` type is used to describe the column types, which maps to the Postgres Data Type. This library includes the following set of supported types:
 ```typescript
 // Bit/Byte/Bool types
 function BOOLEAN(): BooleanType
@@ -48,7 +48,7 @@ function INTEGER(): IntegerType
 function BIGINT(): BigintType
 function NUMERIC(): NumerciType
 function REAL(): RealType
-function DOUBLE(): DoubleType // Aka FLOAT8 or DOUBLE PRECISION
+function DOUBLE(): DoubleType // Aka DOUBLE PRECISION (FLOAT8)
 
 // Serial types
 function SMALLSERIAL(): SmallintType
@@ -72,7 +72,7 @@ function ARRAY(of: Type): ArrayType<Type>
 function JSON<T>(): JSONType<T>
 function JSONB<T>(): JSONBType<T>
 ```
-Все перечислинные типы данных имеют набор методов для описания констрейнтов колонок, необходимых при создании таблицы:
+All of the listed data types have a set of methods for describing the column constraints required when creating a table:
 ```ts
 interface Type {
   required (conf?: ConstraintConfig): Type
@@ -91,8 +91,8 @@ interface Type {
 }
 ```
 
-Теперь у нас есть всё необходимое что бы описать схемму таблицы.
-Для примера я опишу пару таблиц (Юзеры и Пермиссии)
+Now we have everything we need to describe the table schema.
+For example, I will describe a couple of tables (Users and Permissions)
 ```ts
 // schemas.ts
 import { source, UUID, TEXT, GEN_RANDOM_UUID } from 'grespost'
@@ -111,10 +111,11 @@ export const PermissionsTable = source('permissions', {
 })
 ```
 
-Как видите при обьявлении схемм мы воспользовались стандартной функцией postgres `GEN_RANDOM_UUID()`, данная библиотека имеет огромное количество маппингов на стандартные функции postgres, полный их перечень можно увидеть [здесь](https://github.com/shopmonkeyus/grespost/tree/master/src/functions).
+As you can see, when declaring schemas, we used the standard postgres function `GEN_RANDOM_UUID()`, this library has a huge number of mappings to standard postgres functions, a complete list of them you can find [here] (https://github.com/shopmonkeyus/grespost/tree/ master/src/functions).
+### Table creation deletion and altering
 
-### CREATE TABLE
-Создание таблицы в `grespost` производится с использованием функции `CREATE_TABLE` которая имеет следующую сигнатуру:
+#### CREATE TABLE
+Creating a table in `grespost` is done using the `CREATE_TABLE` function which has the following signature:
 
 ```typescript
 function CREATE_TABLE(config: CreateTableConfig): QueryDefinition
@@ -141,9 +142,9 @@ interface CreateTableConfig {
   tablespace?: string
 }
 ```
-Как видите создание sql запроса происходит декларативно, через описание некторого javascript обьекта, на выходе данная функция вернёт класс который можно передать напрямую в `node-pg`
+As you can see, the creation of an sql query occurs declaratively, through the declaration of some javascript object, at the output this function will return a class that can be passed directly to `node-pg`
 
-Давайте для примера создадим нашу таблицу юзеров:
+Let's create our `users` table as an example:
 ```ts
 import { UsersTable, PermissionsTable } from './schemas'
 import pg from 'pg'
@@ -162,6 +163,84 @@ await pg.query(CREATE_TABLE({
 
 await pg.query(CREATE_TABLE({ schema: PermissionsTable }))
 ```
+
+#### ALTER TABLE
+
+Изменение схем таблиц важный элемент эволюции любого проекта. Для этих целей `grespost` предоставляет метод `ALTER_TABLE`:
+```ts
+function ALTER_TABLE (config: AlterTableConfig): QueryDefinition
+
+interface AlterTableConfig {
+  ifExists?: boolean;
+  table: Table | {
+    only?: boolean;
+    table: Table
+  }
+  actions: Template[]
+}
+```
+
+а так же набор функций для построения/изменения констрейнтов колонок (alter table actions):
+```ts
+// Actions:
+function RENAME_TABLE (name: string): Template
+function RENAME_CONSTRAINT (old: string, name: string): Template
+function RENAME_COLUMN (old: string, name: string): Template
+function SET_TABLE_SCHEMA (schema: string): Template
+function ATTACH_PARTITION (name: string, forValues: PartitionBoundConfig): Template
+function DETACH_PARTITION (name: string): Template
+function ADD_COLUMN (name: string, type: Type, config: { constraints?: Template[], collation: string, ifNotExists?: boolean }): Template
+function DROP_COLUMN (name: string, config: { ifExists?: boolean, type?: 'RESTRICT' | 'CACADE' }): Template
+function SET_COLUMN_DEFAULT (name: string, value: any): Template
+function DROP_COLUMN_DEFAULT (name: string): Template
+function SET_COLUMN_NOT_NULL (name: string): Template
+function DROP_COLUMN_NOT_NULL (name: string): Template
+function DROP_CONSTRAINT (name: string, config: { ifExists?: boolean, type?: 'RESTRICT' | 'CACADE' }): Template
+function ADD_TABLE_CONSTRAINT (constraint: Template, notValid?: boolean): Template
+```
+
+Для примера давайте изменим required констрейнт колонки `name` нашей таблицы `users`, а так же добавим для неё дефолтное значение:
+```ts
+import { UsersTable } from './schemas'
+import pg from 'pg'
+import { ALTER_TABLE, SET_COLUMN_NOT_NULL } from 'grespost'
+
+/*
+  ALTER TABLE IF EXISTS users 
+    ALTER COLUMN name SET NOT NULL
+    ALTER COLUMN name SET DEFAULT 'Anonymous'
+*/
+await pg.query(ALTER_TABLE({
+  ifExists: true,
+  table: UsersTable,
+  actions: [
+    SET_COLUMN_NOT_NULL('name'),
+    SET_COLUMN_DEFAULT('name', 'Anonymous')
+  ]
+}))
+```
+
+#### DROP TABLE
+Для удаления таблицы воспользуйтесь функцией `DROP_TABLE`:
+```ts
+function DROP_TABLE (config: DropTableConfig): QueryDefinition
+
+interface DropTableConfig {
+  ifExists?: boolean
+  names: (string | Table)[]
+  constraint?: 'CASCADE' | 'RESTRICT'
+}
+
+// Example of deletion of permissions table:
+DROP_TABLE({ ifExists: true, names: [PermissionsTable] }) 
+```
+
+### Data Manipulation
+
+#### INSERT
+`INSERT` inserts new rows into a table. One can insert one or more rows specified by value expressions, or zero or more rows resulting from a query.
+
+
 
 ## ⭐️ Show your support
 

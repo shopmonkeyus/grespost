@@ -6,6 +6,19 @@ export type CTEConfig = Query | {
   query: Query
 }
 
+/**
+ * @description
+ * WITH provides a way to write auxiliary statements for use in a larger query.
+ * These statements, which are often referred to as Common Table Expressions or CTEs,
+ * can be thought of as defining temporary tables that exist just for one query.
+ * Each auxiliary statement in a WITH clause can be a SELECT, INSERT, UPDATE, or DELETE;
+ * and the WITH clause itself is attached to a primary statement that
+ * can also be a SELECT, INSERT, UPDATE, or DELETE.
+ *
+ * @docs
+ * https://www.postgresql.org/docs/13/sql-select.html#SQL-WITH
+ * https://www.postgresql.org/docs/13/queries-with.html
+ */
 export type WithConfig = CTEConfig[] | {
   recursive?: boolean
   ctes: CTEConfig[]

@@ -14,6 +14,29 @@ type InferDeleteReturning<T extends DeleteConfig> =
         ? L : never
   : MapToExpression<T['returning']>
 
+/**
+ * @description delete rows of a table
+ * @docs https://www.postgresql.org/docs/current/sql-delete.html
+ * @synopsis
+ * [ WITH [ RECURSIVE ] with_query [, ...] ]
+ *
+ * DELETE FROM [ ONLY ] table_name [ * ] [ AS alias ]
+ *
+ * [ USING from_item [, ...] ]
+ *
+ * [ WHERE condition | WHERE CURRENT OF cursor_name ]
+ *
+ * [ RETURNING * | output_expression [ [ AS ] output_name ] [, ...] ]
+ *
+ * @example
+ * // Delete all films but musicals:
+ * // DELETE FROM films WHERE kind <> 'Musical';
+ * DELETE({ from: FilmsTable, where: FilmsTable.kind.gl('Musical') })
+ *
+ * // Clear the table films
+ * // DELETE FROM films;
+ * DELETE({ from: FilmsTable })
+ */
 export function DELETE <T extends DeleteConfig> (config: T) {
   type Ret = InferDeleteReturning<T>
   const ret = config.returning ? Object.keys(config.returning) : []
